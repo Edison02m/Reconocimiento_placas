@@ -115,16 +115,30 @@ def obtener_historial_placas(pagina=1, registros_por_pagina=10, filtro_placa=Non
             # Obtener todos los registros
             todos_registros = response.json()
             
+            # Filtrar registros vacíos o inválidos antes de procesar
+            todos_registros = [reg for reg in todos_registros if isinstance(reg, dict) and reg]
+            
             # Asegurarse de que todos los registros tienen los campos necesarios
             for registro in todos_registros:
-                # Asegurar que los campos obligatorios existen
-                registro['placa'] = registro.get('placa', 'N/A')
-                registro['fecha'] = registro.get('fecha', 'N/A')
-                registro['hora'] = registro.get('hora', 'N/A')
-                registro['origen'] = registro.get('origen', 'Desconocido')
+                # Asegurar que los campos obligatorios existen y no están vacíos
+                registro['placa'] = registro.get('placa') or 'N/A'
+                registro['fecha'] = registro.get('fecha') or 'N/A'
+                registro['hora'] = registro.get('hora') or 'N/A'
+                registro['origen'] = registro.get('origen') or 'Desconocido'
+                
                 # El campo fecha_registro puede no existir en algunos registros
-                if 'fecha_registro' not in registro:
-                    registro['fecha_registro'] = registro.get('fecha', '') + ' ' + registro.get('hora', '')
+                if not registro.get('fecha_registro'):
+                    fecha_str = registro.get('fecha', '')
+                    hora_str = registro.get('hora', '')
+                    registro['fecha_registro'] = f"{fecha_str} {hora_str}".strip()
+                    # Si sigue vacío, usar un valor predeterminado
+                    if not registro['fecha_registro']:
+                        registro['fecha_registro'] = 'N/A'
+            
+            # Eliminar registros que todavía tienen campos obligatorios vacíos
+            todos_registros = [reg for reg in todos_registros if 
+                              reg.get('placa') != 'N/A' or 
+                              (reg.get('fecha') != 'N/A' and reg.get('hora') != 'N/A')]
             
             # Cantidad total de registros
             total_registros = len(todos_registros)
@@ -145,7 +159,7 @@ def obtener_historial_placas(pagina=1, registros_por_pagina=10, filtro_placa=Non
             # Extraer solo los registros de la página actual
             registros_pagina = todos_registros[inicio:fin] if total_registros > 0 else []
             
-            print(f"✅ Se obtuvieron {len(registros_pagina)} de {total_registros} registros (página {pagina} de {total_paginas})")
+            print(f"✅ Se obtuvieron {len(registros_pagina)} de {total_registros} registros válidos (página {pagina} de {total_paginas})")
             
             # Devolver los datos con metadatos de paginación
             return {
@@ -156,8 +170,8 @@ def obtener_historial_placas(pagina=1, registros_por_pagina=10, filtro_placa=Non
                 "registros_por_pagina": registros_por_pagina
             }
             
-        except ValueError:
-            print("❌ Error: El servidor no devolvió un formato JSON válido")
+        except ValueError as e:
+            print(f"❌ Error al procesar JSON: {e}")
             print(f"Respuesta recibida: {response.text[:100]}...")  # Mostrar parte de la respuesta
             return {
                 "registros": [],
@@ -165,7 +179,7 @@ def obtener_historial_placas(pagina=1, registros_por_pagina=10, filtro_placa=Non
                 "total_paginas": 0,
                 "pagina_actual": 1,
                 "registros_por_pagina": registros_por_pagina,
-                "error": "Formato de respuesta inválido"
+                "error": f"Formato de respuesta inválido: {str(e)}"
             }
             
     except requests.exceptions.RequestException as e:

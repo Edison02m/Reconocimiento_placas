@@ -120,13 +120,25 @@ def admin():
     # Extraer la información de paginación
     registros = resultado_historial.get("registros", [])
     
+    # Verificar si hubo un error al obtener los registros
+    error_historial = resultado_historial.get("error", None)
+    
+    # Si hay un error, registrarlo para mostrarlo en la interfaz
+    if error_historial:
+        print(f"Error al obtener historial: {error_historial}")
+    
+    # Asegurarse de que registros no sea None
+    if registros is None:
+        registros = []
+    
     # Pasar toda la información de paginación a la plantilla
     info_paginacion = {
         "pagina_actual": resultado_historial.get("pagina_actual", 1),
         "total_paginas": resultado_historial.get("total_paginas", 1),
         "total_registros": resultado_historial.get("total_registros", 0),
         "registros_por_pagina": registros_por_pagina,
-        "filtro_placa": filtro_placa
+        "filtro_placa": filtro_placa,
+        "error_mensaje": error_historial
     }
     
     return render_template('admin.html', 

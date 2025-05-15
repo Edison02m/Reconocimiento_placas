@@ -26,7 +26,7 @@ INTERVALO_CONSULTA = 1
 # Configuración de la API de citas
 # ---------------------------------------
 # URL del servicio web para consultar citas por número de placa
-URL_CITAS = "https://s3s.suzukiecuador.com/casabacaWebservices/agendamientoCitas/consultaPorPlaca"
+URL_CITAS = "http://192.168.20.138/casabacaWebservices/agendamientoCitas/consultaPorPlaca"
 # Parámetros de identificación de la compañía y agencia
 NO_CIA = "08"
 COD_AGENCIA = "05"

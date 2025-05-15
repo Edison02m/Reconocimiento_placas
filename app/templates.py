@@ -18,275 +18,229 @@ def crear_templates():
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary-color: #e10600;
+            --secondary-color: #333;
+            --accent-color: #ffdd00;
+            --light-bg: #f9f9f9;
+            --dark-bg: #222;
+            --success-color: #28a745;
+            --error-color: #dc3545;
         }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--secondary-color);
+            line-height: 1.6;
+        }
+        
         .logo-container {
             text-align: center;
-            margin-bottom: 20px;
+            margin: 1.5rem 0;
         }
+        
         .logo {
-            max-height: 80px;
+            max-height: 60px;
         }
+        
         .main-container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 15px;
         }
+        
         .card {
-            border-radius: 15px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
             border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
         }
+        
         .card-header {
-            background-color: #e10600;
+            background-color: var(--primary-color);
             color: white;
-            border-radius: 15px 15px 0 0 !important;
-            font-weight: bold;
-            font-size: 1.5rem;
-            padding: 15px 20px;
-        }
-        .client-info {
-            background-color: #ffffff;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            border-left: 5px solid #0056b3;
-        }
-        .plate {
-            font-size: 3rem;
-            font-weight: bold;
-            text-align: center;
-            padding: 15px 20px;
-            background-color: #ffdd00;
-            color: #333;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            border: 2px solid #333;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            display: inline-block;
-            min-width: 200px;
-        }
-        .info-label {
             font-weight: 600;
-            color: #555;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            letter-spacing: 0.5px;
+            font-size: 1.3rem;
+            padding: 1rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .info-value {
-            font-size: 1.1rem;
-            color: #333;
-            font-weight: 500;
-        }
-        .timestamp {
-            font-size: 0.9rem;
-            color: #666;
-            text-align: right;
-            font-style: italic;
-            margin-top: 15px;
-        }
+        
         .status-indicator {
-            width: 15px;
-            height: 15px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             display: inline-block;
-            margin-right: 8px;
+            margin-right: 6px;
         }
+        
         .status-active {
-            background-color: #28a745;
+            background-color: var(--success-color);
             animation: pulse 2s infinite;
         }
+        
         .status-inactive {
-            background-color: #dc3545;
+            background-color: var(--error-color);
         }
-        .vehicle-details {
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid #e10600;
+        
+        .card-body {
+            padding: 1.8rem;
         }
-        .no-appointment {
+        
+        .plate {
+            font-size: 2.8rem;
+            font-weight: 700;
             text-align: center;
-            padding: 60px 30px;
-            background-color: #ffeeee;
-            border-radius: 15px;
-            margin: 20px 0;
-            border: 2px solid #dc3545;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        }
-        #no-appointment-message {
-            font-weight: 500;
-            color: #333;
-        }
-        .status-message {
-            background-color: #f1f1f1;
-            padding: 12px 15px;
+            padding: 0.7rem 1.2rem;
+            background-color: var(--accent-color);
+            color: var(--dark-bg);
             border-radius: 8px;
-            margin: 15px auto;
-            border-left: 4px solid #0056b3;
-            text-align: left;
+            margin-bottom: 1.5rem;
+            border: 2px solid var(--dark-bg);
             display: inline-block;
-            max-width: 80%;
+            min-width: 180px;
+            letter-spacing: 1px;
         }
+        
+        .client-info, .vehicle-details {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .client-info {
+            border-left-color: #0056b3;
+        }
+        
         .waiting-data {
             text-align: center;
-            padding: 80px 30px;
-            background-color: #f5f5f5;
-            border-radius: 10px;
-            margin: 40px 0;
-            color: #666;
-            border: 1px dashed #0056b3;
+            padding: 3rem 1.5rem;
+            margin: 1.5rem 0;
+            color: #555;
+            border-radius: 8px;
+            background-color: white;
         }
+        
         .error-connection {
             text-align: center;
-            padding: 80px 30px;
-            background-color: #f8d7da;
-            border-radius: 10px;
-            margin: 40px 0;
-            color: #721c24;
-            border: 1px dashed #dc3545;
+            padding: 3rem 1.5rem;
+            background-color: #fff0f0;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            color: var(--error-color);
+            border: 1px dashed var(--error-color);
         }
+        
+        .no-appointment {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            background-color: #ffeeee;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid #ffcdcd;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            padding: 1rem 0;
+            color: #888;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        
+        .plate-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
-        .appointment-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            color: #28a745;
-        }
-        .no-appointment-icon {
-            font-size: 6rem;
-            margin-bottom: 20px;
-            color: #dc3545;
-            animation: pulse 2s infinite;
-        }
-        .waiting-icon {
-            font-size: 5rem;
-            margin-bottom: 30px;
-            color: #0056b3;
-            animation: spin 2s linear infinite;
-        }
-        .error-icon {
-            font-size: 5rem;
-            margin-bottom: 30px;
-            color: #dc3545;
-        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .footer {
-            margin-top: 20px;
-            padding: 15px 0;
-            color: #777;
-            font-size: 0.9rem;
-            text-align: center;
-            border-top: 1px solid #eee;
-        }
-        .admin-link {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            color: #666;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        .admin-link:hover {
-            color: #333;
-            text-decoration: underline;
-        }
-        .plate-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 <body>
-    <a href="/admin" class="admin-link"><i class="fas fa-cog"></i> Administración</a>
-    
     <div class="main-container">
-        <div class="logo-container mt-3">
+        <div class="logo-container">
             <img src="https://www.casabaca.com/wp-content/uploads/2021/07/logo-casabaca-toyota-ec.png" alt="Casabaca Toyota" class="logo">
         </div>
         
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header">
                 <span>
-                    <i class="fas fa-car"></i> Sistema de Detección de Vehículos
+                    Sistema de Detección de Vehículos
                 </span>
                 <span>
                     <span class="status-indicator" id="status-indicator"></span>
                     <span id="status-text">Verificando</span>
                 </span>
             </div>
-            <div class="card-body p-4">
+            <div class="card-body">
                 <div id="waiting-content" class="waiting-data">
-                    <i class="fas fa-sync waiting-icon"></i>
-                    <h2>Sistema Listo</h2>
+                    <h2>Sistema Activo</h2>
                     <p>Esperando vehículos</p>
                 </div>
                 
                 <div id="error-connection" class="error-connection" style="display: none;">
-                    <i class="fas fa-exclamation-triangle error-icon"></i>
                     <h2>Sistema en Mantenimiento</h2>
                     <p>Por favor, espere un momento mientras restablecemos el servicio.</p>
                 </div>
                 
                 <div id="data-content" style="display: none;">
-                    <div class="row">
-                        <div class="col-md-12 mb-4">
-                            <div class="plate-container">
-                                <h3 class="plate" id="plate-number">ABC-1234</h3>
-                            </div>
-                        </div>
+                    <div class="plate-container">
+                        <h3 class="plate" id="plate-number">ABC-1234</h3>
                     </div>
                     
                     <div id="appointment-found" style="display: none;">
-                        <div class="text-center mb-4">
-                            <i class="fas fa-check-circle appointment-icon" style="font-size: 5rem; color: #28a745;"></i>
-                            <h2 style="font-size: 2.5rem; font-weight: bold; color: #28a745; margin-top: 20px;">CITA CONFIRMADA</h2>
+                        <div class="text-center mb-3">
+                            <h2>CITA CONFIRMADA</h2>
                         </div>
                         
                         <div class="client-info">
-                            <div class="row mb-4">
-                                <div class="col-md-12 text-center">
-                                    <div style="font-size: 1.8rem; font-weight: bold; color: #333;" id="client-name"></div>
-                                    <div style="font-size: 1.2rem; color: #666;" id="client-id"></div>
+                            <div class="row text-center mb-3">
+                                <div class="col-12">
+                                    <div class="fs-4 fw-bold" id="client-name"></div>
+                                    <div class="text-secondary" id="client-id"></div>
                                 </div>
                             </div>
                             
-                            <div class="row mb-3">
-                                <div class="col-md-6 text-center">
-                                    <div style="font-size: 1.1rem; font-weight: bold; color: #0056b3;">FECHA DE CITA</div>
-                                    <div style="font-size: 1.6rem;" id="appointment-date"></div>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="fw-bold text-primary">FECHA</div>
+                                    <div class="fs-5" id="appointment-date"></div>
                                 </div>
-                                <div class="col-md-6 text-center">
-                                    <div style="font-size: 1.1rem; font-weight: bold; color: #0056b3;">ASESOR</div>
-                                    <div style="font-size: 1.6rem;" id="advisor"></div>
+                                <div class="col-6">
+                                    <div class="fw-bold text-primary">ASESOR</div>
+                                    <div class="fs-5" id="advisor"></div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="vehicle-details mt-4">
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-                                    <div style="font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; color: #333;">
-                                        <i class="fas fa-car me-2"></i>INFORMACIÓN DEL VEHÍCULO
-                                    </div>
-                                    <div style="font-size: 1.5rem;" id="vehicle-model"></div>
-                                    <div style="font-size: 1.2rem; margin-top: 10px;">
-                                        <span style="font-weight: bold;">Orden:</span> 
-                                        <span id="order"></span>
-                                    </div>
+                        <div class="vehicle-details">
+                            <div class="text-center">
+                                <div class="fw-bold mb-2">
+                                    VEHÍCULO
+                                </div>
+                                <div class="fs-5" id="vehicle-model"></div>
+                                <div class="mt-2">
+                                    <span class="fw-bold">Orden:</span> 
+                                    <span id="order"></span>
                                 </div>
                             </div>
                         </div>
@@ -294,10 +248,9 @@ def crear_templates():
                     
                     <div id="no-appointment" style="display: none;">
                         <div class="no-appointment">
-                            <i class="fas fa-times-circle no-appointment-icon" style="color: #dc3545; font-size: 5rem;"></i>
-                            <h2 style="font-size: 2.5rem; font-weight: bold; margin-top: 20px; color: #dc3545;">NO TIENE CITA</h2>
-                            <div style="background-color: #f8f8f8; border-radius: 8px; padding: 15px; margin: 20px auto; max-width: 80%; border-left: 4px solid #dc3545;">
-                                <span id="no-appointment-message" style="font-size: 1.2rem; font-weight: 500; color: #333;"></span>
+                            <h2>NO TIENE CITA</h2>
+                            <div class="bg-light p-3 rounded mx-auto mt-3" style="max-width: 80%;">
+                                <span id="no-appointment-message" class="fs-5"></span>
                             </div>
                         </div>
                     </div>
@@ -402,6 +355,12 @@ def crear_templates():
         // Actualizar datos inmediatamente y luego cada 2 segundos
         actualizarDatos();
         setInterval(actualizarDatos, 2000);
+        
+        // Desactivar el menú contextual para evitar interacciones no deseadas
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        
+        // Desactivar selección de texto
+        document.addEventListener('selectstart', event => event.preventDefault());
     </script>
 </body>
 </html>
@@ -419,49 +378,72 @@ def crear_templates():
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #333;
+            --light-bg: #f9f9f9;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --error-color: #dc3545;
         }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--secondary-color);
+            line-height: 1.6;
+        }
+        
         .logo-container {
             text-align: center;
-            margin-bottom: 20px;
+            margin: 1.2rem 0;
         }
+        
         .logo {
             max-height: 60px;
+            transition: transform 0.3s ease;
         }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
         .main-container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 15px;
         }
+        
         .card {
-            border-radius: 15px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
             border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            overflow: hidden;
         }
+        
         .card-header {
-            background-color: #0056b3;
+            background-color: var(--primary-color);
             color: white;
-            border-radius: 15px 15px 0 0 !important;
-            font-weight: bold;
-            font-size: 1.5rem;
-            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            padding: 1rem 1.2rem;
         }
+        
+        .card-body {
+            padding: 1.8rem;
+        }
+        
         .section-title {
             font-size: 1.3rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #444;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .device-card {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
-            padding: 15px;
-        }
+        
         .device-status {
             display: inline-block;
             width: 10px;
@@ -469,63 +451,103 @@ def crear_templates():
             border-radius: 50%;
             margin-right: 5px;
         }
+        
         .status-active {
-            background-color: #28a745;
+            background-color: var(--success-color);
         }
+        
         .status-inactive {
-            background-color: #dc3545;
+            background-color: var(--error-color);
         }
-        .table {
-            font-size: 0.95rem;
-        }
-        .table th {
-            font-weight: bold;
-            background-color: #f0f0f0;
-        }
-        .footer {
-            margin-top: 20px;
-            padding: 15px 0;
-            color: #777;
-            font-size: 0.9rem;
-            text-align: center;
-            border-top: 1px solid #eee;
-        }
-        .back-link {
-            margin-bottom: 20px;
-            display: inline-block;
-        }
+        
         .camera-info {
-            background-color: #f8f8f8;
+            background-color: white;
             border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
-        .camera-info .row {
-            margin-bottom: 10px;
-        }
-        .camera-info .label {
-            font-weight: bold;
+        
+        .label {
+            font-weight: 600;
             color: #666;
         }
-        #verificar-resultado {
-            display: none;
-            margin-top: 15px;
-            padding: 12px;
+        
+        .table {
+            background-color: white;
             border-radius: 8px;
-            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
+        
+        .table th {
+            background-color: rgba(0, 0, 0, 0.03);
+            font-weight: 600;
+            padding: 0.8rem;
         }
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
+        
+        .table td {
+            padding: 0.8rem;
+            vertical-align: middle;
         }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            margin-bottom: 1rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .btn {
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+        }
+        
         .error-msg {
-            color: #dc3545;
+            color: var(--error-color);
             font-style: italic;
             margin-top: 5px;
+        }
+        
+        #verificar-resultado {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .pagination {
+            margin-bottom: 0;
+        }
+        
+        .pagination .page-link {
+            color: var(--primary-color);
+            border-color: var(--border-color);
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            padding: 1rem 0;
+            color: #888;
+            font-size: 0.8rem;
+            text-align: center;
         }
     </style>
 </head>
@@ -541,7 +563,7 @@ def crear_templates():
             <div class="card-header">
                 <i class="fas fa-cog"></i> Panel de Administración
             </div>
-            <div class="card-body p-4">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-md-12 mb-4">
                         <h2 class="section-title"><i class="fas fa-video"></i> Dispositivos de Captura ANPR</h2>
@@ -549,17 +571,17 @@ def crear_templates():
                         <div class="camera-info">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="row">
+                                    <div class="row mb-2">
                                         <div class="col-md-4 label">Modelo:</div>
                                         <div class="col-md-8">{{ camara.modelo }}</div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row mb-2">
                                         <div class="col-md-4 label">Estado:</div>
                                         <div class="col-md-8">
                                             <span class="device-status {% if camara.estado == 'Activo' %}status-active{% else %}status-inactive{% endif %}"></span> 
                                             <span id="estado-camara">{{ camara.estado }}</span>
                                             {% if camara.estado != 'Activo' %}
-                                                <div class="error-msg">
+                                                <div class="error-msg mt-2">
                                                     {{ camara.mensaje }}
                                                     <div class="mt-2">
                                                         <small class="text-muted">
@@ -572,15 +594,15 @@ def crear_templates():
                                             {% endif %}
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row mb-2">
                                         <div class="col-md-4 label">Eventos recientes:</div>
                                         <div class="col-md-8" id="eventos-recientes">{{ camara.eventos_recientes }}</div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row mb-2">
                                         <div class="col-md-4 label">URL:</div>
                                         <div class="col-md-8">{{ camara.url }}</div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row mb-2">
                                         <div class="col-md-4 label">Usuario:</div>
                                         <div class="col-md-8">{{ camara.usuario }}</div>
                                     </div>
@@ -592,7 +614,7 @@ def crear_templates():
                             </div>
                             <div class="row mt-3">
                                 <div class="col-md-12">
-                                    <button id="verificar-conexion" class="btn btn-sm btn-primary">
+                                    <button id="verificar-conexion" class="btn btn-primary btn-sm">
                                         <i class="fas fa-sync-alt"></i> Verificar Conexión
                                     </button>
                                     <div id="verificar-resultado"></div>
@@ -604,38 +626,7 @@ def crear_templates():
                     <div class="col-md-12">
                         <h2 class="section-title"><i class="fas fa-history"></i> Historial de Detecciones</h2>
                         
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Número de Placa</th>
-                                        <th>Fecha</th>
-                                        <th>Hora</th>
-                                        <th>Origen</th>
-                                        <th>Registrado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% if historial %}
-                                        {% for registro in historial %}
-                                            <tr>
-                                                <td>{{ registro.placa }}</td>
-                                                <td>{{ registro.fecha }}</td>
-                                                <td>{{ registro.hora }}</td>
-                                                <td>{{ registro.origen }}</td>
-                                                <td>{{ registro.fecha_registro }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% else %}
-                                        <tr>
-                                            <td colspan="5" class="text-center">No hay registros disponibles</td>
-                                        </tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between mb-3">
                             <button class="btn btn-outline-secondary">
                                 <i class="fas fa-file-export"></i> Exportar Registros
                             </button>
@@ -644,7 +635,7 @@ def crear_templates():
                                 <form action="{{ url_for('main.admin') }}" method="get" class="d-flex">
                                     <input type="text" name="placa" class="form-control me-2" placeholder="Buscar placa..." 
                                            value="{{ paginacion.filtro_placa if paginacion and paginacion.filtro_placa }}">
-                                    <button type="submit" class="btn btn-outline-primary">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-search"></i> Buscar
                                     </button>
                                     {% if paginacion and paginacion.filtro_placa %}
@@ -656,9 +647,64 @@ def crear_templates():
                             </div>
                         </div>
                         
+                        {% if paginacion and paginacion.error_mensaje %}
+                        <div class="alert alert-warning mb-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Error al obtener registros:</strong> {{ paginacion.error_mensaje }}
+                            <div class="mt-2">
+                                <a href="{{ url_for('main.admin') }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-sync-alt"></i> Intentar nuevamente
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Número de Placa</th>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Origen</th>
+                                        <th>Registrado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if historial and historial|length > 0 %}
+                                        {% for registro in historial %}
+                                            <tr>
+                                                <td><strong>{{ registro.placa }}</strong></td>
+                                                <td>{{ registro.fecha }}</td>
+                                                <td>{{ registro.hora }}</td>
+                                                <td>{{ registro.origen }}</td>
+                                                <td>{{ registro.fecha_registro }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4">
+                                                <div class="my-4">
+                                                    <i class="fas fa-inbox text-muted mb-3" style="font-size: 2.5rem;"></i>
+                                                    <p class="lead">No hay registros disponibles</p>
+                                                    {% if paginacion and paginacion.filtro_placa %}
+                                                        <p>No se encontraron coincidencias para "{{ paginacion.filtro_placa }}"</p>
+                                                        <a href="{{ url_for('main.admin') }}" class="btn btn-outline-primary btn-sm mt-2">
+                                                            <i class="fas fa-sync-alt"></i> Mostrar todos los registros
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        {% if historial and historial|length > 0 %}
                         <!-- Controles de paginación -->
                         {% if paginacion %}
-                        <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="d-flex justify-content-between align-items-center mt-3">
                             <div>
                                 <span class="text-muted">
                                     Mostrando registros {{ (paginacion.pagina_actual - 1) * paginacion.registros_por_pagina + 1 }} 
@@ -694,6 +740,7 @@ def crear_templates():
                                 </ul>
                             </nav>
                         </div>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>
@@ -765,7 +812,7 @@ def crear_templates():
                         let errorMsg = document.querySelector('.error-msg');
                         if (!errorMsg) {
                             errorMsg = document.createElement('div');
-                            errorMsg.className = 'error-msg';
+                            errorMsg.className = 'error-msg mt-2';
                             estadoSpan.parentNode.appendChild(errorMsg);
                         }
                         errorMsg.innerHTML = `
