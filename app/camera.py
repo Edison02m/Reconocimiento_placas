@@ -1,3 +1,15 @@
+"""
+Módulo de comunicación con la cámara Hikvision para detección de placas vehiculares
+
+Este módulo contiene las funciones necesarias para establecer comunicación con 
+la cámara IP Hikvision que realiza la detección de placas vehiculares. Implementa
+métodos para verificar la conexión, obtener las placas detectadas y procesar la
+información recibida.
+
+La cámara expone una API REST que devuelve datos en formato XML, los cuales son
+procesados para extraer la información relevante de las placas detectadas.
+"""
+
 import requests
 from requests.auth import HTTPDigestAuth
 import xml.etree.ElementTree as ET
@@ -6,7 +18,12 @@ import time
 from app.config import URL, USERNAME, PASSWORD, HEADERS, BODY_XML
 
 def verificar_conexion_camara():
-    """Verifica si hay conexión con la cámara.
+    """
+    Verifica si hay conexión con la cámara Hikvision.
+    
+    Realiza una solicitud de prueba a la API de la cámara para comprobar
+    si está disponible y responde correctamente. Maneja diferentes tipos de
+    errores que pueden ocurrir durante la comunicación.
     
     Returns:
         tuple: (bool, str) - (True/False si hay conexión, mensaje descriptivo)
@@ -31,11 +48,21 @@ def verificar_conexion_camara():
         return False, f"Error desconocido al conectar con la cámara: {e}"
 
 def get_plates():
-    """Obtiene las placas detectadas por la cámara.
+    """
+    Obtiene las placas detectadas por la cámara Hikvision.
+    
+    Consulta la API de la cámara para obtener los registros de placas vehiculares
+    detectadas, procesa la respuesta XML y extrae la información relevante.
+    Los resultados se ordenan por fecha de detección (más reciente primero).
+    
+    El método maneja correctamente el namespace XML que puede variar según la
+    versión del firmware de la cámara, y procesa las fechas para convertirlas
+    a objetos datetime de Python.
     
     Returns:
-        list: Lista de diccionarios con información de las placas detectadas,
-              ordenadas por fecha (más reciente primero).
+        list: Lista de diccionarios con información de las placas detectadas.
+              Cada diccionario contiene 'placa', 'fecha' y 'país'.
+              Si hay error de conexión o proceso, devuelve lista vacía.
     """
     conectado, _ = verificar_conexion_camara()
     if not conectado:
@@ -92,9 +119,18 @@ def get_plates():
         return []
 
 def probar_conexion():
-    """Función para probar la conexión con la cámara desde línea de comandos.
+    """
+    Función de diagnóstico para probar la conexión con la cámara desde línea de comandos.
     
-    Imprime información detallada sobre el resultado de la conexión.
+    Imprime información detallada sobre el resultado de la conexión, incluyendo:
+    - Tiempo de respuesta
+    - Estado de la conexión
+    - Cantidad de placas detectadas
+    - Últimas 3 placas detectadas (si existen)
+    - Sugerencias en caso de error
+    
+    Esta función está diseñada para ser utilizada directamente cuando se ejecuta
+    este archivo como script principal.
     """
     print(f"Probando conexión a la cámara en: {URL}")
     print(f"Usuario: {USERNAME}")

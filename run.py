@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Sistema de Detección de Placas Vehiculares - Casabaca
+
+Este es el punto de entrada principal del sistema de detección de placas vehiculares.
+El script inicializa todos los componentes necesarios, verifica las conexiones
+y arranca el servidor web Flask que proporciona la interfaz de usuario.
+
+Autor: Edison02m
+Fecha: 2025
+Versión: 1.0
+"""
+
 from app import create_app
 from app.database import conectar_db, probar_conexion_servidor
 from app.templates import crear_templates
@@ -5,7 +19,20 @@ from app.monitor import iniciar_monitor
 from app.camera import verificar_conexion_camara
 
 def iniciar_servidor():
-    """Inicializa y arranca el servidor web."""
+    """
+    Inicializa y arranca el servidor web.
+    
+    Esta función realiza las siguientes tareas:
+    1. Crea los archivos de plantillas HTML necesarios
+    2. Verifica la conexión con la cámara de detección de placas
+    3. Verifica la conexión con el servidor remoto para almacenamiento de datos
+    4. Verifica la conexión con la base de datos local (solo diagnóstico)
+    5. Inicia el hilo de monitoreo para la detección de placas
+    6. Crea e inicia la aplicación web Flask
+    
+    Returns:
+        None
+    """
     # Crear plantillas antes de iniciar
     crear_templates()
     

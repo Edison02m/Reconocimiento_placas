@@ -1,3 +1,19 @@
+"""
+Módulo de gestión del estado de la aplicación para el Sistema de Detección de Placas
+
+Este módulo mantiene el estado global de la aplicación, almacenando información 
+sobre la última detección de placa, los resultados de consulta de citas y 
+el historial de eventos procesados. Proporciona funciones para:
+
+1. Gestionar el estado actual de la última placa detectada
+2. Actualizar los datos de cita correspondientes a un vehículo
+3. Controlar qué eventos han sido procesados para evitar duplicación
+4. Generar identificadores únicos para eventos de detección
+
+El estado se mantiene en memoria durante la ejecución del programa y es
+compartido entre los diferentes componentes de la aplicación.
+"""
+
 from datetime import datetime
 
 # Estado compartido de la aplicación
@@ -14,24 +30,38 @@ ultima_consulta = {
 eventos_exactos_procesados = set()
 
 def crear_id_evento_exacto(placa, fecha):
-    """Crea un ID único para un evento de detección de placa.
+    """
+    Crea un identificador único para un evento de detección de placa.
+    
+    Este identificador permite determinar si un evento específico ya ha sido
+    procesado, evitando duplicados. Se compone del número de placa combinado
+    con la fecha y hora exacta de detección, formateado como una cadena única.
     
     Args:
         placa (str): Número de placa detectado
         fecha (datetime): Fecha y hora de la detección
         
     Returns:
-        str: ID único para el evento
+        str: Identificador único para el evento en formato "PLACA_YYYYMMDDHHMMSS"
     """
     return f"{placa}_{fecha.strftime('%Y%m%d%H%M%S')}"
 
 def actualizar_datos(resultado_cita, placa, fecha):
-    """Actualiza los datos de última consulta con la información de la cita.
+    """
+    Actualiza el estado global con los datos de la última consulta y cita.
+    
+    Esta función actualiza el diccionario global 'ultima_consulta' con la
+    información de la placa detectada y el resultado de la consulta a la API
+    de citas. Analiza la respuesta JSON de la API para determinar si el vehículo
+    tiene una cita programada y extrae los datos relevantes.
     
     Args:
-        resultado_cita (dict): Resultado de la consulta a la API de citas
-        placa (str): Número de placa consultado
+        resultado_cita (dict): Respuesta JSON de la API de citas o None si hubo error
+        placa (str): Número de placa detectado
         fecha (datetime): Fecha y hora de la detección
+        
+    Returns:
+        None: La función actualiza el estado global directamente
     """
     global ultima_consulta
     

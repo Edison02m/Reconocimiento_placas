@@ -1,6 +1,15 @@
 # Sistema de Detección de Placas - Casabaca
 
-Este sistema permite detectar automáticamente las placas de los vehículos que ingresan a las instalaciones de Casabaca y verificar si tienen citas programadas.
+Sistema profesional para la detección automática de placas vehiculares y verificación de citas programadas en concesionarios Toyota Casabaca.
+
+## Características principales
+
+- **Detección automática**: Captura y reconocimiento de placas vehiculares en tiempo real
+- **Verificación de citas**: Consulta inmediata al sistema de agendamiento de Casabaca
+- **Interfaz visual mejorada**: Muestra claramente el estado de cita con colores e iconos intuitivos
+- **Historial completo**: Registro y consulta del historial de placas detectadas con paginación
+- **Monitoreo de dispositivos**: Panel de administración para verificar el estado de las cámaras
+- **Arquitectura modular**: Diseño refactorizado para facilitar mantenimiento y extensibilidad
 
 ## Estructura del Proyecto
 
@@ -20,36 +29,57 @@ El proyecto ha sido refactorizado en una estructura modular para facilitar su ma
 │   └── templates/
 │       ├── index.html     # Interfaz web principal
 │       └── admin.html     # Interfaz de administración
+├── database_setup.sql     # Script para configuración inicial de la BD
 └── run.py                 # Punto de entrada
 ```
 
-## Características
+## Funcionalidades detalladas
 
-- **Detección de placas**: Captura automática de placas vehiculares usando cámaras Hikvision
-- **Consulta de citas**: Verifica si los vehículos detectados tienen citas programadas
-- **Almacenamiento en base de datos**: Registro histórico de todas las placas detectadas
-- **Panel de administración**: Gestión de dispositivos y visualización del historial de detecciones
+### Detección de placas
+- Utiliza cámaras Hikvision con capacidad ANPR (Automatic Number Plate Recognition)
+- Comunicación vía API REST con formato XML
+- Procesamiento de eventos de detección en tiempo real
 
-## Hardware Compatible
+### Consulta de citas
+- Integración con el servicio web de citas de Casabaca
+- Presentación clara de estados de cita:
+  - CITA CONFIRMADA (verde): Cuando el vehículo tiene una cita programada
+  - NO TIENE CITA / NO SE ENCONTRARON RESULTADOS (rojo): Cuando no hay cita
+- Visualización de información detallada del cliente y vehículo
 
-- **Modelo de cámara recomendado**: IDS-2CD7A46G0/P-IZHSY
-- Cámaras Hikvision con capacidad de reconocimiento de placas (ANPR)
+### Almacenamiento de datos
+- Registro completo de todas las placas detectadas
+- Doble almacenamiento: servidor remoto principal y base de datos local de respaldo
+- Capacidad de filtrado y paginación para grandes volúmenes de datos
+
+### Interfaz de usuario
+- Diseño moderno y responsivo usando Bootstrap 5
+- Identidad visual de Casabaca Toyota
+- Interfaz principal para visualizar la última detección
+- Panel de administración para monitoreo y consulta del historial
+
+## Hardware compatible
+
+- **Modelo de cámara recomendado**: Hikvision IDS-2CD7A46G0/P-IZHSY
+- Cualquier cámara Hikvision con capacidad de reconocimiento de placas (ANPR)
 - Comunicación vía TCP/IP con direccionamiento fijo de IP
 
-## Requisitos
+## Requisitos del sistema
 
 - Python 3.6+
 - Flask
-- requests
-- mysql-connector-python
+- Requests
+- MySQL-connector-python
+- Conexión a red TCP/IP para comunicación con la cámara
+- Servidor MySQL para almacenamiento (opcional para diagnóstico)
 
 ## Instalación
 
 1. Clona el repositorio:
 
 ```bash
-git clone [url-del-repositorio]
-cd [nombre-del-directorio]
+git clone https://github.com/Edison02m/Reconocimiento_placas.git
+cd Reconocimiento_placas
 ```
 
 2. Instala las dependencias:
@@ -58,10 +88,16 @@ cd [nombre-del-directorio]
 pip install -r requirements.txt
 ```
 
-3. Configura la base de datos MySQL:
+3. Configura la base de datos MySQL (opcional para diagnóstico):
    - Crea una base de datos llamada `placas`
-   - Ejecuta el script SQL para crear la tabla `registro_placas`
+   - Ejecuta el script SQL para crear la tabla `registro_placas`:
+   ```bash
+   mysql -u root -p placas < database_setup.sql
+   ```
    - Actualiza la configuración en `app/config.py` si es necesario
+
+4. Configura las direcciones IP y credenciales:
+   - Edita `app/config.py` con la información de tu cámara y servidor
 
 ## Uso
 
@@ -75,15 +111,28 @@ La interfaz web estará disponible en:
 - **Monitor principal**: `http://localhost:5000`
 - **Panel de administración**: `http://localhost:5000/admin`
 
-## Configuración
+## Mejoras implementadas
 
-Edita el archivo `app/config.py` para ajustar:
+### 1. Refactorización modular
+- División del código monolítico en módulos especializados
+- Mayor facilidad de mantenimiento y extensibilidad
+- Separación clara de responsabilidades
 
-- URL de la cámara IP
-- Credenciales de acceso
-- Configuración de la base de datos
-- URL del servicio de citas
+### 2. Paginación y búsqueda de registros
+- Implementación de paginación en el historial de placas
+- Filtrado por número de placa
+- Mejor rendimiento con grandes volúmenes de datos
+
+### 3. Mejora en la visualización de citas
+- Rediseño de la interfaz para mostrar claramente el estado de cita
+- Presentación destacada de la información importante
+- Mensaje claro cuando no se encuentran resultados
+
+### 4. Documentación completa
+- Docstrings detallados explicando cada módulo y función
+- Comentarios explicativos en el código
+- README con instrucciones claras para instalación y uso
 
 ## Desarrollado por
 
-Casabaca - Departamento de Tecnología 
+Departamento de Tecnología - Casabaca Toyota Ecuador 
