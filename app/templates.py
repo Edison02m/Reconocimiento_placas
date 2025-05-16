@@ -14,7 +14,7 @@ def crear_templates():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Detección de Placas - Casabaca</title>
+    <title>Sistema de Detección de Placas </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -178,7 +178,7 @@ def crear_templates():
 <body>
     <div class="main-container">
         <div class="logo-container">
-            <img src="https://www.casabaca.com/wp-content/uploads/2021/07/logo-casabaca-toyota-ec.png" alt="Casabaca Toyota" class="logo">
+            <img src="https://www.casabaca.com/wp-content/uploads/2021/07/logo-casabaca-toyota-ec.png" alt=" Toyota" class="logo">
         </div>
         
         <div class="card">
@@ -192,7 +192,12 @@ def crear_templates():
                 </span>
             </div>
             <div class="card-body">
-                <div id="waiting-content" class="waiting-data">
+                <div id="welcome-content" class="waiting-data">
+                    <h2>Bienvenido a Toyota</h2>
+                    <p>Sistema de detección de vehículos activo</p>
+                </div>
+                
+                <div id="waiting-content" class="waiting-data" style="display: none;">
                     <h2>Sistema Activo</h2>
                     <p>Esperando vehículos</p>
                 </div>
@@ -212,46 +217,21 @@ def crear_templates():
                             <h2>CITA CONFIRMADA</h2>
                         </div>
                         
-                        <div class="client-info">
-                            <div class="row text-center mb-3">
-                                <div class="col-12">
-                                    <div class="fs-4 fw-bold" id="client-name"></div>
-                                    <div class="text-secondary" id="client-id"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="row text-center">
-                                <div class="col-6">
-                                    <div class="fw-bold text-primary">FECHA</div>
-                                    <div class="fs-5" id="appointment-date"></div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="fw-bold text-primary">ASESOR</div>
-                                    <div class="fs-5" id="advisor"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="vehicle-details">
-                            <div class="text-center">
-                                <div class="fw-bold mb-2">
-                                    VEHÍCULO
-                                </div>
-                                <div class="fs-5" id="vehicle-model"></div>
-                                <div class="mt-2">
-                                    <span class="fw-bold">Orden:</span> 
-                                    <span id="order"></span>
-                                </div>
-                            </div>
+                        <div class="p-4 text-center">
+                            <ul class="list-unstyled fs-5 text-start mx-auto" style="max-width: 90%;">
+                                <li class="mb-2">• <span id="client-info"></span></li>
+                                <li class="mb-2">• <span id="vehicle-info"></span></li>
+                                <li>• <span id="advisor-info"></span></li>
+                            </ul>
                         </div>
                     </div>
                     
                     <div id="no-appointment" style="display: none;">
-                        <div class="no-appointment">
+                        <div class="text-center mb-3">
                             <h2>NO TIENE CITA</h2>
-                            <div class="bg-light p-3 rounded mx-auto mt-3" style="max-width: 80%;">
-                                <span id="no-appointment-message" class="fs-5"></span>
-                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <p class="fs-5" id="no-appointment-message"></p>
                         </div>
                     </div>
                 </div>
@@ -259,12 +239,17 @@ def crear_templates():
         </div>
         
         <div class="footer">
-            <p>© 2025 Casabaca Toyota - Sistema de Detección de Vehículos v1.0</p>
+            <p>© 2025  Toyota - Sistema de Detección de Vehículos v1.0</p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Variable para almacenar el último evento procesado
+        let ultimoEvento = null;
+        // Variable para controlar el temporizador
+        let temporizadorVuelta = null;
+        
         // Función para actualizar los datos cada 2 segundos
         function actualizarDatos() {
             fetch('/datos')
@@ -287,24 +272,31 @@ def crear_templates():
                     // Controlar la visibilidad de las secciones según el estado
                     if (!data.camara_conectada) {
                         // Si no hay conexión con la cámara, mostrar mensaje de error
-                        document.getElementById('error-connection').style.display = 'block';
-                        document.getElementById('waiting-content').style.display = 'none';
-                        document.getElementById('data-content').style.display = 'none';
+                        mostrarContenido('error-connection');
                         return;
                     } else {
                         document.getElementById('error-connection').style.display = 'none';
                     }
                     
-                    // Si hay conexión pero no hay placa detectada
+                    // Si no hay placa detectada, mostrar pantalla de bienvenida
                     if (!data.placa) {
-                        document.getElementById('waiting-content').style.display = 'block';
-                        document.getElementById('data-content').style.display = 'none';
+                        mostrarContenido('welcome-content');
                         return;
                     }
                     
+                    // Crear un identificador único para el evento actual (placa + hora)
+                    const eventoActual = `${data.placa}-${data.fecha}`;
+                    
+                    // Verificar si este evento ya fue procesado (para evitar duplicados)
+                    if (eventoActual === ultimoEvento) {
+                        return; // No hacer nada si es el mismo evento
+                    }
+                    
+                    // Es un nuevo evento, procesarlo
+                    ultimoEvento = eventoActual;
+                    
                     // Mostrar datos de detección
-                    document.getElementById('waiting-content').style.display = 'none';
-                    document.getElementById('data-content').style.display = 'block';
+                    mostrarContenido('data-content');
                     document.getElementById('plate-number').textContent = data.placa;
                     
                     // Mostrar información según si tiene cita o no
@@ -314,12 +306,11 @@ def crear_templates():
                         
                         // Llenar datos de la cita
                         const cita = data.datos_cita;
-                        document.getElementById('client-name').textContent = cita.nombreCliente;
-                        document.getElementById('client-id').textContent = cita.cedulaCliente;
-                        document.getElementById('vehicle-model').textContent = cita.descripcionVeh;
-                        document.getElementById('appointment-date').textContent = cita.fechaCita;
-                        document.getElementById('advisor').textContent = cita.nombreAsesor;
-                        document.getElementById('order').textContent = cita.ordenrepld;
+                        
+                        // Crear información en formato de puntos
+                        document.getElementById('client-info').textContent = `Estimado/a ${cita.nombreCliente} tiene cita agendada para el ${cita.fechaCita}`;
+                        document.getElementById('vehicle-info').textContent = `Vehículo: ${cita.descripcionVeh}`;
+                        document.getElementById('advisor-info').textContent = `Asesor: ${cita.nombreAsesor} - Orden: ${cita.ordenrepld}`;
                     } else {
                         document.getElementById('appointment-found').style.display = 'none';
                         document.getElementById('no-appointment').style.display = 'block';
@@ -336,6 +327,15 @@ def crear_templates():
                         
                         document.getElementById('no-appointment-message').textContent = mensajeAPI;
                     }
+                    
+                    // Configurar temporizador para volver a la pantalla de bienvenida después de 1 minuto
+                    if (temporizadorVuelta) {
+                        clearTimeout(temporizadorVuelta);
+                    }
+                    
+                    temporizadorVuelta = setTimeout(() => {
+                        mostrarContenido('welcome-content');
+                    }, 60000); // 60000 ms = 1 minuto
                 })
                 .catch(error => {
                     console.error('Error al obtener datos:', error);
@@ -346,10 +346,17 @@ def crear_templates():
                     statusText.textContent = 'Error de conexión';
                     
                     // Mostrar mensaje de error de conexión
-                    document.getElementById('error-connection').style.display = 'block';
-                    document.getElementById('waiting-content').style.display = 'none';
-                    document.getElementById('data-content').style.display = 'none';
+                    mostrarContenido('error-connection');
                 });
+        }
+        
+        // Función auxiliar para mostrar solo el contenido especificado
+        function mostrarContenido(idContenido) {
+            const contenidos = ['welcome-content', 'waiting-content', 'error-connection', 'data-content'];
+            
+            contenidos.forEach(id => {
+                document.getElementById(id).style.display = (id === idContenido) ? 'block' : 'none';
+            });
         }
         
         // Actualizar datos inmediatamente y luego cada 2 segundos
@@ -556,7 +563,7 @@ def crear_templates():
         <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Volver al Monitor</a>
         
         <div class="logo-container">
-            <img src="https://www.casabaca.com/wp-content/uploads/2021/07/logo-casabaca-toyota-ec.png" alt="Casabaca Toyota" class="logo">
+            <img src="https://www.casabaca.com/wp-content/uploads/2021/07/logo-casabaca-toyota-ec.png" alt=" Toyota" class="logo">
         </div>
         
         <div class="card">
@@ -748,7 +755,7 @@ def crear_templates():
         </div>
         
         <div class="footer">
-            <p>© 2025 Casabaca Toyota - Sistema de Detección de Vehículos v1.0</p>
+            <p>© 2025  Toyota - Sistema de Detección de Vehículos v1.0</p>
         </div>
     </div>
 
