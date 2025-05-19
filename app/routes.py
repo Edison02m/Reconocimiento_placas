@@ -14,14 +14,15 @@ El módulo utiliza el patrón Blueprint de Flask para organizar las rutas
 de manera modular y facilitar su mantenimiento.
 """
 
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, send_from_directory
 from app.state import ultima_consulta
 from app.database import conectar_db, obtener_historial_placas
 from app.config import URL, USERNAME, PASSWORD
 from app.camera import get_plates, verificar_conexion_camara
+import os
 
 # Crear un Blueprint para las rutas
-main_bp = Blueprint('main', __name__)
+main_bp = Blueprint('main', __name__, static_folder='static')
 
 @main_bp.route('/')
 def index():
@@ -34,7 +35,7 @@ def index():
     - Información del cliente y vehículo
     - Estado de conexión con la cámara
     
-    La plantilla utiliza JavaScript para actualizar los datos
+    La plantilla ahora utiliza Vue.js para actualizar los datos
     periódicamente mediante consultas AJAX al endpoint /datos.
     
     Returns:

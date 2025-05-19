@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Sistema de Detección de Placas Vehiculares - Casabaca
+Sistema de Detección de Placas Vehiculares - Suzuki
 
 Este es el punto de entrada principal del sistema de detección de placas vehiculares.
 El script inicializa todos los componentes necesarios, verifica las conexiones
@@ -85,6 +85,6 @@ def iniciar_servidor():
 
 if __name__ == "__main__":
     print("\n===============================================")
-    print("  SISTEMA DE DETECCIÓN DE PLACAS - CASABACA")
+    print("  SISTEMA DE DETECCIÓN DE PLACAS - SUZUKI")
     print("===============================================\n")
     iniciar_servidor() 

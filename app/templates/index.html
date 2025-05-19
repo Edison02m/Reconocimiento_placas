@@ -6,416 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Detección de Placas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #1E88E5;
-            --secondary-color: #333;
-            --accent-color: #ffdd00;
-            --light-bg: #f8f9fa;
-            --dark-bg: #222;
-            --success-color: #28a745;
-            --error-color: #dc3545;
-        }
-        
-        body {
-            background-color: var(--light-bg);
-            font-family: 'Montserrat', sans-serif;
-            color: var(--secondary-color);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .header {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px 0;
-            position: relative;
-            z-index: 100;
-        }
-        
-        .logo-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 3rem;
-        }
-        
-        .logo {
-            height: 80px;
-        }
-        
-        .status-container {
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-            font-size: 1.2rem;
-        }
-        
-        .status-indicator {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 10px;
-        }
-        
-        .status-active {
-            background-color: var(--success-color);
-            animation: pulse 2s infinite;
-        }
-        
-        .status-inactive {
-            background-color: var(--error-color);
-        }
-        
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 3rem;
-        }
-        
-        .content-container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .plate {
-            font-size: 4.5rem;
-            font-weight: 700;
-            text-align: center;
-            padding: 1rem 2rem;
-            background-color: var(--accent-color);
-            color: var(--dark-bg);
-            border-radius: 10px;
-            margin-bottom: 3rem;
-            border: 3px solid var(--dark-bg);
-            display: inline-block;
-            min-width: 280px;
-            letter-spacing: 3px;
-        }
-        
-        .info-section {
-            background-color: white;
-            border-radius: 15px;
-            padding: 3rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            width: 100%;
-        }
-        
-        .appointment-confirmed {
-            border-left: 8px solid var(--success-color);
-        }
-        
-        .waiting-data {
-            text-align: center;
-            padding: 8rem 3rem;
-            margin: 3rem 0;
-            color: #555;
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-        
-        .error-connection {
-            text-align: center;
-            padding: 8rem 3rem;
-            background-color: #fff0f0;
-            border-radius: 15px;
-            margin: 3rem 0;
-            color: var(--error-color);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-        
-        .no-appointment {
-            border-left: 8px solid var(--error-color);
-        }
-        
-        h2 {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            text-align: center;
-        }
-        
-        .plate-container {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .footer {
-            background-color: white;
-            padding: 1.5rem 0;
-            color: #888;
-            font-size: 1rem;
-            text-align: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        
-        .info-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 1.8rem;
-        }
-        
-        .info-list li {
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-            text-align: center;
-        }
-        
-        .info-list li:last-child {
-            border-bottom: none;
-        }
-        
-        .welcome-container {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 60vh;
-        }
-        
-        .welcome-title {
-            font-size: 4rem;
-            margin-bottom: 2rem;
-            color: var(--primary-color);
-        }
-        
-        .welcome-subtitle {
-            font-size: 2rem;
-            color: #666;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        .no-appointment-message {
-            font-size: 2rem;
-            text-align: center;
-            padding: 2rem 0;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
-    <div class="header">
-        <div class="logo-container">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzjacaReuensqCroZhbPShC0grYy7PDlMnxQ&s" alt="Suzuki" class="logo">
-            <div class="status-container">
-                    <span class="status-indicator" id="status-indicator"></span>
-                    <span id="status-text">Verificando</span>
+    <div id="app">
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzjacaReuensqCroZhbPShC0grYy7PDlMnxQ&s" alt="Suzuki" class="logo">
+                <div class="status-container">
+                    <span class="status-indicator" :class="statusIndicator"></span>
+                    <span id="status-text">[[ statusText ]]</span>
+                </div>
             </div>
         </div>
+                
+        <div class="main-content">
+            <div class="content-container">
+                <!-- Pantalla de Bienvenida -->
+                <div v-if="currentView === 'welcome-content'" class="welcome-container">
+                    <h1 class="welcome-title">Bienvenido a Suzuki</h1>
+                    <p class="welcome-subtitle">Sistema de detección de vehículos activo y funcionando correctamente</p>
                 </div>
                 
-    <div class="main-content">
-        <div class="content-container">
-            <!-- Pantalla de Bienvenida -->
-            <div id="welcome-content" class="welcome-container">
-                <h1 class="welcome-title">Bienvenido a Suzuki</h1>
-                <p class="welcome-subtitle">Sistema de detección de vehículos activo y funcionando correctamente</p>
-            </div>
-            
-            <!-- Esperando Vehículos -->
-                <div id="waiting-content" class="waiting-data" style="display: none;">
+                <!-- Esperando Vehículos -->
+                <div v-if="currentView === 'waiting-content'" class="waiting-data">
                     <h2>Sistema Activo</h2>
-                <p class="welcome-subtitle">Esperando detección de vehículos</p>
+                    <p class="welcome-subtitle">Esperando detección de vehículos</p>
                 </div>
                 
-            <!-- Error de Conexión -->
-                <div id="error-connection" class="error-connection" style="display: none;">
+                <!-- Error de Conexión -->
+                <div v-if="currentView === 'error-connection'" class="error-connection">
                     <h2>Sistema en Mantenimiento</h2>
-                <p class="welcome-subtitle">Por favor, espere un momento mientras restablecemos el servicio.</p>
+                    <p class="welcome-subtitle">Por favor, espere un momento mientras restablecemos el servicio.</p>
                 </div>
                 
-            <!-- Datos del Vehículo Detectado -->
-                <div id="data-content" style="display: none;">
+                <!-- Datos del Vehículo Detectado -->
+                <div v-if="currentView === 'data-content'">
                     <div class="plate-container">
-                        <h3 class="plate" id="plate-number">ABC-1234</h3>
+                        <h3 class="plate">[[ plateNumber ]]</h3>
                     </div>
                     
-                <div id="appointment-found" class="info-section appointment-confirmed" style="display: none;">
-                    <div class="text-center mb-4">
+                    <div v-if="hasAppointment" class="info-section appointment-confirmed">
+                        <div class="text-center mb-4">
                             <h2>CITA CONFIRMADA</h2>
                         </div>
                         
-                    <ul class="info-list">
-                        <li><span id="client-info"></span></li>
-                        <li><span id="vehicle-info"></span></li>
-                        <li><span id="advisor-info"></span></li>
-                            </ul>
+                        <ul class="info-list">
+                            <li>[[ clientInfo ]]</li>
+                            <li>[[ vehicleInfo ]]</li>
+                            <li>[[ advisorInfo ]]</li>
+                        </ul>
                     </div>
                     
-                <div id="no-appointment" class="info-section no-appointment" style="display: none;">
-                    <div class="text-center mb-4">
+                    <div v-else class="info-section no-appointment">
+                        <div class="text-center mb-4">
                             <h2>NO TIENE CITA</h2>
                         </div>
-                    <p class="no-appointment-message" id="no-appointment-message"></p>
+                        <p class="no-appointment-message">[[ noAppointmentMessage ]]</p>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="footer">
-        <p>© 2025 Suzuki - Sistema de Detección de Vehículos v1.0</p>
+            <p>© 2025 Suzuki - Sistema de Detección de Vehículos v1.0</p>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Variable para almacenar el último evento procesado
-        let ultimoEvento = null;
-        // Variable para controlar el temporizador
-        let temporizadorVuelta = null;
-        
-        // Función para formatear la placa con guion después de las primeras 3 letras
-        function formatearPlaca(placa) {
-            if (!placa) return "";
-            
-            // Eliminar cualquier guion existente
-            placa = placa.replace(/-/g, '');
-            
-            // Si la placa tiene al menos 4 caracteres, insertar un guion después del tercer carácter
-            if (placa.length >= 4) {
-                return placa.substring(0, 3) + '-' + placa.substring(3);
-            }
-            
-            return placa;
-        }
-        
-        // Función para actualizar los datos cada 2 segundos
-        function actualizarDatos() {
-            fetch('/datos')
-                .then(response => response.json())
-                .then(data => {
-                    // Actualizar el indicador de estado
-                    const statusIndicator = document.getElementById('status-indicator');
-                    const statusText = document.getElementById('status-text');
-                    
-                    if (data.camara_conectada) {
-                        statusIndicator.classList.remove('status-inactive');
-                        statusIndicator.classList.add('status-active');
-                        statusText.textContent = 'Activo';
-                    } else {
-                        statusIndicator.classList.remove('status-active');
-                        statusIndicator.classList.add('status-inactive');
-                        statusText.textContent = 'Sin conexión';
-                    }
-                    
-                    // Controlar la visibilidad de las secciones según el estado
-                    if (!data.camara_conectada) {
-                        // Si no hay conexión con la cámara, mostrar mensaje de error
-                        mostrarContenido('error-connection');
-                        return;
-                    } else {
-                        document.getElementById('error-connection').style.display = 'none';
-                    }
-                    
-                    // Si no hay placa detectada, mostrar pantalla de bienvenida
-                    if (!data.placa) {
-                        mostrarContenido('welcome-content');
-                        return;
-                    }
-                    
-                    // Crear un identificador único para el evento actual (placa + hora)
-                    const eventoActual = `${data.placa}-${data.fecha}`;
-                    
-                    // Verificar si este evento ya fue procesado (para evitar duplicados)
-                    if (eventoActual === ultimoEvento) {
-                        return; // No hacer nada si es el mismo evento
-                    }
-                    
-                    // Es un nuevo evento, procesarlo
-                    ultimoEvento = eventoActual;
-                    
-                    // Mostrar datos de detección
-                    mostrarContenido('data-content');
-                    document.getElementById('plate-number').textContent = formatearPlaca(data.placa);
-                    
-                    // Mostrar información según si tiene cita o no
-                    if (data.tiene_cita && data.datos_cita) {
-                        document.getElementById('appointment-found').style.display = 'block';
-                        document.getElementById('no-appointment').style.display = 'none';
-                        
-                        // Llenar datos de la cita
-                        const cita = data.datos_cita;
-                        
-                        // Crear información en formato de puntos
-                        document.getElementById('client-info').textContent = `Estimado/a ${cita.nombreCliente} tiene cita agendada para el ${cita.fechaCita}`;
-                        document.getElementById('vehicle-info').textContent = `Vehículo: ${cita.descripcionVeh}`;
-                        document.getElementById('advisor-info').textContent = `Asesor: ${cita.nombreAsesor} - Orden: ${cita.ordenrepld}`;
-                    } else {
-                        document.getElementById('appointment-found').style.display = 'none';
-                        document.getElementById('no-appointment').style.display = 'block';
-                        
-                        // Procesar el mensaje de la API
-                        let mensajeAPI = data.mensaje || "NO SE ENCONTRARON RESULTADOS";
-                        
-                        // Formatear mensaje para mostrar en mayúsculas y bien presentado
-                        if (mensajeAPI === "NO SE ENCONTRARON RESULTADOS") {
-                            mensajeAPI = "No se encontraron citas programadas";
-                        } else if (mensajeAPI.toLowerCase().includes("error")) {
-                            mensajeAPI = "Error en la consulta de citas";
-                        }
-                        
-                        document.getElementById('no-appointment-message').textContent = mensajeAPI;
-                    }
-                    
-                    // Configurar temporizador para volver a la pantalla de bienvenida después de 1 minuto
-                    if (temporizadorVuelta) {
-                        clearTimeout(temporizadorVuelta);
-                    }
-                    
-                    temporizadorVuelta = setTimeout(() => {
-                        mostrarContenido('welcome-content');
-                    }, 60000); // 60000 ms = 1 minuto
-                })
-                .catch(error => {
-                    console.error('Error al obtener datos:', error);
-                    const statusIndicator = document.getElementById('status-indicator');
-                    const statusText = document.getElementById('status-text');
-                    statusIndicator.classList.remove('status-active');
-                    statusIndicator.classList.add('status-inactive');
-                    statusText.textContent = 'Error de conexión';
-                    
-                    // Mostrar mensaje de error de conexión
-                    mostrarContenido('error-connection');
-                });
-        }
-        
-        // Función auxiliar para mostrar solo el contenido especificado
-        function mostrarContenido(idContenido) {
-            const contenidos = ['welcome-content', 'waiting-content', 'error-connection', 'data-content'];
-            
-            contenidos.forEach(id => {
-                document.getElementById(id).style.display = (id === idContenido) ? 'block' : 'none';
-            });
-        }
-        
-        // Actualizar datos inmediatamente y luego cada 2 segundos
-        actualizarDatos();
-        setInterval(actualizarDatos, 2000);
-        
-        // Desactivar el menú contextual para evitar interacciones no deseadas
-        document.addEventListener('contextmenu', event => event.preventDefault());
-        
-        // Desactivar selección de texto
-        document.addEventListener('selectstart', event => event.preventDefault());
-    </script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
         

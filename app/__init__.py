@@ -23,6 +23,10 @@ def create_app():
     """
     app = Flask(__name__)
     
+    # Configurar jinja2 para usar delimitadores diferentes a los de Vue.js
+    app.jinja_env.variable_start_string = '[['
+    app.jinja_env.variable_end_string = ']]'
+    
     # Registrar las rutas a través del blueprint principal
     from app.routes import main_bp
     app.register_blueprint(main_bp)

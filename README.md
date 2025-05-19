@@ -1,15 +1,16 @@
-# Sistema de Detección de Placas - Casabaca
+# Sistema de Detección de Placas - Suzuki
 
-Sistema profesional para la detección automática de placas vehiculares y verificación de citas programadas en concesionarios Toyota Casabaca.
+Sistema profesional para la detección automática de placas vehiculares y verificación de citas programadas en concesionarios Suzuki.
 
 ## Características principales
 
 - **Detección automática**: Captura y reconocimiento de placas vehiculares en tiempo real
-- **Verificación de citas**: Consulta inmediata al sistema de agendamiento de Casabaca
+- **Verificación de citas**: Consulta inmediata al sistema de agendamiento de Suzuki
 - **Interfaz visual mejorada**: Muestra claramente el estado de cita con colores e iconos intuitivos
 - **Historial completo**: Registro y consulta del historial de placas detectadas con paginación
 - **Monitoreo de dispositivos**: Panel de administración para verificar el estado de las cámaras
 - **Arquitectura modular**: Diseño refactorizado para facilitar mantenimiento y extensibilidad
+- **Frontend en Vue.js**: Interfaz de usuario moderna y reactiva con Vue.js 3
 
 ## Estructura del Proyecto
 
@@ -26,6 +27,11 @@ El proyecto ha sido refactorizado en una estructura modular para facilitar su ma
 │   ├── routes.py          # Rutas web
 │   ├── state.py           # Estado compartido
 │   ├── templates.py       # Gestión de plantillas HTML
+│   ├── static/            # Archivos estáticos
+│   │   ├── css/           # Hojas de estilo CSS
+│   │   │   └── main.css   # Estilos principales
+│   │   └── js/            # Scripts JavaScript
+│   │       └── main.js    # Lógica de Vue.js
 │   └── templates/
 │       ├── index.html     # Interfaz web principal
 │       └── admin.html     # Interfaz de administración
@@ -41,7 +47,7 @@ El proyecto ha sido refactorizado en una estructura modular para facilitar su ma
 - Procesamiento de eventos de detección en tiempo real
 
 ### Consulta de citas
-- Integración con el servicio web de citas de Casabaca
+- Integración con el servicio web de citas de Suzuki
 - Presentación clara de estados de cita:
   - CITA CONFIRMADA (verde): Cuando el vehículo tiene una cita programada
   - NO TIENE CITA / NO SE ENCONTRARON RESULTADOS (rojo): Cuando no hay cita
@@ -53,10 +59,12 @@ El proyecto ha sido refactorizado en una estructura modular para facilitar su ma
 - Capacidad de filtrado y paginación para grandes volúmenes de datos
 
 ### Interfaz de usuario
-- Diseño moderno y responsivo usando Bootstrap 5
-- Identidad visual de Casabaca Toyota
+- Frontend moderno con Vue.js 3 para reactividad y mejor rendimiento
+- Diseño responsivo usando Bootstrap 5
+- Identidad visual de Suzuki
 - Interfaz principal para visualizar la última detección
 - Panel de administración para monitoreo y consulta del historial
+- Tipografía Montserrat para una presentación más profesional
 
 ## Hardware compatible
 
@@ -67,11 +75,13 @@ El proyecto ha sido refactorizado en una estructura modular para facilitar su ma
 ## Requisitos del sistema
 
 - Python 3.6+
-- Flask
-- Requests
-- MySQL-connector-python
+- Flask 2.0.1
+- Werkzeug 2.0.1
+- Requests 2.26.0
+- MySQL-connector-python 8.0.26
 - Conexión a red TCP/IP para comunicación con la cámara
 - Servidor MySQL para almacenamiento (opcional para diagnóstico)
+- Navegador moderno compatible con Vue.js 3
 
 ## Instalación
 
@@ -118,21 +128,31 @@ La interfaz web estará disponible en:
 - Mayor facilidad de mantenimiento y extensibilidad
 - Separación clara de responsabilidades
 
-### 2. Paginación y búsqueda de registros
+### 2. Migración a Vue.js
+- Implementación de frontend con Vue.js 3 usando la Composition API
+- Mejor reactividad y rendimiento en la interfaz de usuario
+- Código frontend más mantenible y organizado
+- Separación de la lógica de negocio de la presentación
+
+### 3. Optimización de recursos
+- Separación de CSS y JavaScript en archivos independientes
+- Mejor estructura de los archivos estáticos
+- Aprovechamiento del sistema de caché del navegador
+
+### 4. Formato de placa mejorado
+- Implementación de formato de placa con guion después de las tres primeras letras (ABC-1234)
+- Procesamiento automático al detectar una nueva placa
+
+### 5. Paginación y búsqueda de registros
 - Implementación de paginación en el historial de placas
 - Filtrado por número de placa
 - Mejor rendimiento con grandes volúmenes de datos
 
-### 3. Mejora en la visualización de citas
+### 6. Mejora en la visualización de citas
 - Rediseño de la interfaz para mostrar claramente el estado de cita
 - Presentación destacada de la información importante
 - Mensaje claro cuando no se encuentran resultados
 
-### 4. Documentación completa
-- Docstrings detallados explicando cada módulo y función
-- Comentarios explicativos en el código
-- README con instrucciones claras para instalación y uso
-
 ## Desarrollado por
 
-Departamento de Tecnología - Casabaca Toyota Ecuador 
+Departamento de Tecnología - Suzuki Ecuador 
