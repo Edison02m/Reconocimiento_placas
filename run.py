@@ -12,6 +12,10 @@ Fecha: 2025
 Versión: 1.0
 """
 
+import os
+# Configurar para evitar que Flask intente cargar archivos .env
+os.environ['FLASK_SKIP_DOTENV'] = '1'
+
 from app import create_app
 from app.database import conectar_db, probar_conexion_servidor
 from app.templates import crear_templates

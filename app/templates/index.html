@@ -4,15 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Detección de Placas </title>
+    <title>Sistema de Detección de Placas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #e10600;
+            --primary-color: #1E88E5;
             --secondary-color: #333;
             --accent-color: #ffdd00;
-            --light-bg: #f9f9f9;
+            --light-bg: #f8f9fa;
             --dark-bg: #222;
             --success-color: #28a745;
             --error-color: #dc3545;
@@ -23,47 +22,45 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--secondary-color);
             line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+            position: relative;
+            z-index: 100;
         }
         
         .logo-container {
-            text-align: center;
-            margin: 1.5rem 0;
-        }
-        
-        .logo {
-            max-height: 60px;
-        }
-        
-        .main-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-        }
-        
-        .card-header {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-            font-size: 1.3rem;
-            padding: 1rem 1.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 3rem;
+        }
+        
+        .logo {
+            height: 80px;
+        }
+        
+        .status-container {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 1.2rem;
         }
         
         .status-indicator {
-            width: 10px;
-            height: 10px;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
             display: inline-block;
-            margin-right: 6px;
+            margin-right: 10px;
         }
         
         .status-active {
@@ -75,82 +72,92 @@
             background-color: var(--error-color);
         }
         
-        .card-body {
-            padding: 1.8rem;
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+        
+        .content-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
         
         .plate {
-            font-size: 2.8rem;
+            font-size: 4.5rem;
             font-weight: 700;
             text-align: center;
-            padding: 0.7rem 1.2rem;
+            padding: 1rem 2rem;
             background-color: var(--accent-color);
             color: var(--dark-bg);
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            border: 2px solid var(--dark-bg);
+            border-radius: 10px;
+            margin-bottom: 3rem;
+            border: 3px solid var(--dark-bg);
             display: inline-block;
-            min-width: 180px;
-            letter-spacing: 1px;
+            min-width: 280px;
+            letter-spacing: 3px;
         }
         
-        .client-info, .vehicle-details {
+        .info-section {
             background-color: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            border-left: 4px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
         }
         
-        .client-info {
-            border-left-color: #0056b3;
+        .appointment-confirmed {
+            border-left: 8px solid var(--success-color);
         }
         
         .waiting-data {
             text-align: center;
-            padding: 3rem 1.5rem;
-            margin: 1.5rem 0;
+            padding: 8rem 3rem;
+            margin: 3rem 0;
             color: #555;
-            border-radius: 8px;
             background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
         
         .error-connection {
             text-align: center;
-            padding: 3rem 1.5rem;
+            padding: 8rem 3rem;
             background-color: #fff0f0;
-            border-radius: 8px;
-            margin: 1.5rem 0;
+            border-radius: 15px;
+            margin: 3rem 0;
             color: var(--error-color);
-            border: 1px dashed var(--error-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
         
         .no-appointment {
-            text-align: center;
-            padding: 2.5rem 1.5rem;
-            background-color: #ffeeee;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            border: 1px solid #ffcdcd;
+            border-left: 8px solid var(--error-color);
         }
         
         h2 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .footer {
-            margin-top: 2rem;
-            padding: 1rem 0;
-            color: #888;
-            font-size: 0.8rem;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
             text-align: center;
         }
         
         .plate-container {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer {
+            background-color: white;
+            padding: 1.5rem 0;
+            color: #888;
+            font-size: 1rem;
+            text-align: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         
         @keyframes pulse {
@@ -159,78 +166,113 @@
             100% { opacity: 1; }
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .info-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .welcome-container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+        }
+        
+        .welcome-title {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .welcome-subtitle {
+            font-size: 2rem;
+            color: #666;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .no-appointment-message {
+            font-size: 2rem;
+            text-align: center;
+            padding: 2rem 0;
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
+    <div class="header">
         <div class="logo-container">
-            <img src="https://www.casabaca.com/wp-content/uploads/2021/07/logo-casabaca-toyota-ec.png" alt=" Toyota" class="logo">
-        </div>
-        
-        <div class="card">
-            <div class="card-header">
-                <span>
-                    Sistema de Detección de Vehículos
-                </span>
-                <span>
-                    <span class="status-indicator" id="status-indicator"></span>
-                    <span id="status-text">Verificando</span>
-                </span>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzjacaReuensqCroZhbPShC0grYy7PDlMnxQ&s" alt="Suzuki" class="logo">
+            <div class="status-container">
+                <span class="status-indicator" id="status-indicator"></span>
+                <span id="status-text">Verificando</span>
             </div>
-            <div class="card-body">
-                <div id="welcome-content" class="waiting-data">
-                    <h2>Bienvenido a Toyota</h2>
-                    <p>Sistema de detección de vehículos activo</p>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="content-container">
+            <!-- Pantalla de Bienvenida -->
+            <div id="welcome-content" class="welcome-container">
+                <h1 class="welcome-title">Bienvenido a Suzuki</h1>
+                <p class="welcome-subtitle">Sistema de detección de vehículos activo y funcionando correctamente</p>
+            </div>
+            
+            <!-- Esperando Vehículos -->
+            <div id="waiting-content" class="waiting-data" style="display: none;">
+                <h2>Sistema Activo</h2>
+                <p class="welcome-subtitle">Esperando detección de vehículos</p>
+            </div>
+            
+            <!-- Error de Conexión -->
+            <div id="error-connection" class="error-connection" style="display: none;">
+                <h2>Sistema en Mantenimiento</h2>
+                <p class="welcome-subtitle">Por favor, espere un momento mientras restablecemos el servicio.</p>
+            </div>
+            
+            <!-- Datos del Vehículo Detectado -->
+            <div id="data-content" style="display: none;">
+                <div class="plate-container">
+                    <h3 class="plate" id="plate-number">ABC-1234</h3>
                 </div>
                 
-                <div id="waiting-content" class="waiting-data" style="display: none;">
-                    <h2>Sistema Activo</h2>
-                    <p>Esperando vehículos</p>
-                </div>
-                
-                <div id="error-connection" class="error-connection" style="display: none;">
-                    <h2>Sistema en Mantenimiento</h2>
-                    <p>Por favor, espere un momento mientras restablecemos el servicio.</p>
-                </div>
-                
-                <div id="data-content" style="display: none;">
-                    <div class="plate-container">
-                        <h3 class="plate" id="plate-number">ABC-1234</h3>
+                <div id="appointment-found" class="info-section appointment-confirmed" style="display: none;">
+                    <div class="text-center mb-4">
+                        <h2>CITA CONFIRMADA</h2>
                     </div>
                     
-                    <div id="appointment-found" style="display: none;">
-                        <div class="text-center mb-3">
-                            <h2>CITA CONFIRMADA</h2>
-                        </div>
-                        
-                        <div class="p-4 text-center">
-                            <ul class="list-unstyled fs-5 text-start mx-auto" style="max-width: 90%;">
-                                <li class="mb-2">• <span id="client-info"></span></li>
-                                <li class="mb-2">• <span id="vehicle-info"></span></li>
-                                <li>• <span id="advisor-info"></span></li>
-                            </ul>
-                        </div>
+                    <ul class="info-list">
+                        <li><span id="client-info"></span></li>
+                        <li><span id="vehicle-info"></span></li>
+                        <li><span id="advisor-info"></span></li>
+                    </ul>
+                </div>
+                
+                <div id="no-appointment" class="info-section no-appointment" style="display: none;">
+                    <div class="text-center mb-4">
+                        <h2>NO TIENE CITA</h2>
                     </div>
-                    
-                    <div id="no-appointment" style="display: none;">
-                        <div class="text-center mb-3">
-                            <h2>NO TIENE CITA</h2>
-                        </div>
-                        <div class="p-4 text-center">
-                            <p class="fs-5" id="no-appointment-message"></p>
-                        </div>
-                    </div>
+                    <p class="no-appointment-message" id="no-appointment-message"></p>
                 </div>
             </div>
         </div>
-        
-        <div class="footer">
-            <p>© 2025  Toyota - Sistema de Detección de Vehículos v1.0</p>
-        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2025 Suzuki - Sistema de Detección de Vehículos v1.0</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -239,6 +281,21 @@
         let ultimoEvento = null;
         // Variable para controlar el temporizador
         let temporizadorVuelta = null;
+        
+        // Función para formatear la placa con guion después de las primeras 3 letras
+        function formatearPlaca(placa) {
+            if (!placa) return "";
+            
+            // Eliminar cualquier guion existente
+            placa = placa.replace(/-/g, '');
+            
+            // Si la placa tiene al menos 4 caracteres, insertar un guion después del tercer carácter
+            if (placa.length >= 4) {
+                return placa.substring(0, 3) + '-' + placa.substring(3);
+            }
+            
+            return placa;
+        }
         
         // Función para actualizar los datos cada 2 segundos
         function actualizarDatos() {
@@ -287,7 +344,7 @@
                     
                     // Mostrar datos de detección
                     mostrarContenido('data-content');
-                    document.getElementById('plate-number').textContent = data.placa;
+                    document.getElementById('plate-number').textContent = formatearPlaca(data.placa);
                     
                     // Mostrar información según si tiene cita o no
                     if (data.tiene_cita && data.datos_cita) {

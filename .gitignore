@@ -36,4 +36,8 @@ env/
 Thumbs.db
 
 # Logs
-*.log 
+*.log
+
+
+ngrok.exe
+ngrok.zip
