@@ -29,7 +29,7 @@ def crear_templates():
         
         body {
             background-color: var(--light-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             color: var(--secondary-color);
             line-height: 1.6;
             margin: 0;
@@ -227,12 +227,12 @@ def crear_templates():
         <div class="logo-container">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzjacaReuensqCroZhbPShC0grYy7PDlMnxQ&s" alt="Suzuki" class="logo">
             <div class="status-container">
-                <span class="status-indicator" id="status-indicator"></span>
-                <span id="status-text">Verificando</span>
+                    <span class="status-indicator" id="status-indicator"></span>
+                    <span id="status-text">Verificando</span>
             </div>
         </div>
-    </div>
-    
+                </div>
+                
     <div class="main-content">
         <div class="content-container">
             <!-- Pantalla de Bienvenida -->
@@ -242,46 +242,46 @@ def crear_templates():
             </div>
             
             <!-- Esperando Vehículos -->
-            <div id="waiting-content" class="waiting-data" style="display: none;">
-                <h2>Sistema Activo</h2>
+                <div id="waiting-content" class="waiting-data" style="display: none;">
+                    <h2>Sistema Activo</h2>
                 <p class="welcome-subtitle">Esperando detección de vehículos</p>
-            </div>
-            
-            <!-- Error de Conexión -->
-            <div id="error-connection" class="error-connection" style="display: none;">
-                <h2>Sistema en Mantenimiento</h2>
-                <p class="welcome-subtitle">Por favor, espere un momento mientras restablecemos el servicio.</p>
-            </div>
-            
-            <!-- Datos del Vehículo Detectado -->
-            <div id="data-content" style="display: none;">
-                <div class="plate-container">
-                    <h3 class="plate" id="plate-number">ABC-1234</h3>
                 </div>
                 
-                <div id="appointment-found" class="info-section appointment-confirmed" style="display: none;">
-                    <div class="text-center mb-4">
-                        <h2>CITA CONFIRMADA</h2>
+            <!-- Error de Conexión -->
+                <div id="error-connection" class="error-connection" style="display: none;">
+                    <h2>Sistema en Mantenimiento</h2>
+                <p class="welcome-subtitle">Por favor, espere un momento mientras restablecemos el servicio.</p>
+                </div>
+                
+            <!-- Datos del Vehículo Detectado -->
+                <div id="data-content" style="display: none;">
+                    <div class="plate-container">
+                        <h3 class="plate" id="plate-number">ABC-1234</h3>
                     </div>
                     
+                <div id="appointment-found" class="info-section appointment-confirmed" style="display: none;">
+                    <div class="text-center mb-4">
+                            <h2>CITA CONFIRMADA</h2>
+                        </div>
+                        
                     <ul class="info-list">
                         <li><span id="client-info"></span></li>
                         <li><span id="vehicle-info"></span></li>
                         <li><span id="advisor-info"></span></li>
-                    </ul>
-                </div>
-                
+                            </ul>
+                    </div>
+                    
                 <div id="no-appointment" class="info-section no-appointment" style="display: none;">
                     <div class="text-center mb-4">
-                        <h2>NO TIENE CITA</h2>
-                    </div>
+                            <h2>NO TIENE CITA</h2>
+                        </div>
                     <p class="no-appointment-message" id="no-appointment-message"></p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="footer">
+        
+        <div class="footer">
         <p>© 2025 Suzuki - Sistema de Detección de Vehículos v1.0</p>
     </div>
 
@@ -453,7 +453,7 @@ def crear_templates():
         
         body {
             background-color: var(--light-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             color: var(--secondary-color);
             line-height: 1.6;
         }
