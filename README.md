@@ -6,9 +6,9 @@ Sistema profesional para la detección automática de placas vehiculares y verif
 
 - **Detección automática**: Captura y reconocimiento de placas vehiculares en tiempo real
 - **Verificación de citas**: Consulta inmediata al sistema de agendamiento de Casabaca
-- **Interfaz visual mejorada**: Muestra claramente el estado de cita con colores e iconos intuitivos
-- **Historial completo**: Registro y consulta del historial de placas detectadas con paginación
-- **Monitoreo de dispositivos**: Panel de administración para verificar el estado de las cámaras
+- **Salida por consola**: Muestra información clara sobre placas detectadas y estado de citas
+- **Historial completo**: Registro del historial de placas detectadas en servidor remoto
+- **Monitoreo de dispositivos**: Verificación del estado de las cámaras
 - **Arquitectura modular**: Diseño refactorizado para facilitar mantenimiento y extensibilidad
 
 ## Estructura del Proyecto
@@ -17,18 +17,13 @@ El proyecto ha sido refactorizado en una estructura modular para facilitar su ma
 
 ```
 ├── app/
-│   ├── __init__.py        # Inicialización de la aplicación Flask
+│   ├── __init__.py        # Inicialización del paquete
 │   ├── config.py          # Configuración global
 │   ├── camera.py          # Comunicación con la cámara IP
 │   ├── api_citas.py       # Consulta a API de citas
 │   ├── database.py        # Conexión y operaciones con la base de datos
 │   ├── monitor.py         # Monitoreo continuo de placas
-│   ├── routes.py          # Rutas web
-│   ├── state.py           # Estado compartido
-│   ├── templates.py       # Gestión de plantillas HTML
-│   └── templates/
-│       ├── index.html     # Interfaz web principal
-│       └── admin.html     # Interfaz de administración
+│   └── state.py           # Estado compartido
 ├── database_setup.sql     # Script para configuración inicial de la BD
 └── run.py                 # Punto de entrada
 ```
@@ -43,20 +38,13 @@ El proyecto ha sido refactorizado en una estructura modular para facilitar su ma
 ### Consulta de citas
 - Integración con el servicio web de citas de Casabaca
 - Presentación clara de estados de cita:
-  - CITA CONFIRMADA (verde): Cuando el vehículo tiene una cita programada
-  - NO TIENE CITA / NO SE ENCONTRARON RESULTADOS (rojo): Cuando no hay cita
-- Visualización de información detallada del cliente y vehículo
+  - CITA ENCONTRADA: Cuando el vehículo tiene una cita programada
+  - NO SE ENCONTRARON RESULTADOS: Cuando no hay cita
+- Visualización de información detallada del cliente y vehículo en consola
 
 ### Almacenamiento de datos
 - Registro completo de todas las placas detectadas
-- Doble almacenamiento: servidor remoto principal y base de datos local de respaldo
-- Capacidad de filtrado y paginación para grandes volúmenes de datos
-
-### Interfaz de usuario
-- Diseño moderno y responsivo usando Bootstrap 5
-- Identidad visual de Casabaca Toyota
-- Interfaz principal para visualizar la última detección
-- Panel de administración para monitoreo y consulta del historial
+- Almacenamiento en servidor remoto con respaldo opcional en base de datos local
 
 ## Hardware compatible
 
@@ -67,7 +55,6 @@ El proyecto ha sido refactorizado en una estructura modular para facilitar su ma
 ## Requisitos del sistema
 
 - Python 3.6+
-- Flask
 - Requests
 - MySQL-connector-python
 - Conexión a red TCP/IP para comunicación con la cámara
@@ -107,9 +94,7 @@ Para iniciar el sistema:
 python run.py
 ```
 
-La interfaz web estará disponible en:
-- **Monitor principal**: `http://localhost:5000`
-- **Panel de administración**: `http://localhost:5000/admin`
+El sistema mostrará la información de placas detectadas y citas en la consola. Para detener el sistema, presione Ctrl+C.
 
 ## Mejoras implementadas
 
@@ -118,13 +103,12 @@ La interfaz web estará disponible en:
 - Mayor facilidad de mantenimiento y extensibilidad
 - Separación clara de responsabilidades
 
-### 2. Paginación y búsqueda de registros
-- Implementación de paginación en el historial de placas
-- Filtrado por número de placa
-- Mejor rendimiento con grandes volúmenes de datos
+### 2. Optimización para funcionamiento en consola
+- Eliminación de la interfaz web para un funcionamiento más ligero
+- Salida clara y estructurada en consola
+- Mejor rendimiento en sistemas con recursos limitados
 
 ### 3. Mejora en la visualización de citas
-- Rediseño de la interfaz para mostrar claramente el estado de cita
 - Presentación destacada de la información importante
 - Mensaje claro cuando no se encuentran resultados
 

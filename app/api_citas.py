@@ -10,6 +10,7 @@ información detallada de la cita (si existe) en formato JSON.
 """
 
 import requests
+import json
 from app.config import URL_CITAS, NO_CIA, COD_AGENCIA
 
 def consultar_cita(placa):
@@ -32,8 +33,8 @@ def consultar_cita(placa):
         
     Returns:
         dict: Respuesta JSON de la API de citas con toda la información
-              de la cita programada, o None si hay error en la consulta
-              o el vehículo no tiene cita
+              de la cita programada, o un dict con error si hay problemas
+              en la consulta o el vehículo no tiene cita
     """
     try:
         params = {
@@ -44,5 +45,18 @@ def consultar_cita(placa):
         response = requests.get(URL_CITAS, params=params, timeout=10)
         response.raise_for_status()
         return response.json()
-    except Exception:
-        return None 
+    except requests.exceptions.RequestException as e:
+        print(f"Error al conectar con el servicio de citas: {e}")
+        return {"codigo": "1", "mensaje": f"Error al conectar con el servicio de citas"}
+    except json.JSONDecodeError as e:
+        print(f"Error al procesar la respuesta del servicio: {e}")
+        return {"codigo": "1", "mensaje": "Error al procesar la respuesta del servicio"}
+    except Exception as e:
+        error_str = str(e)
+        # Si es un error de PostgreSQL, mostrar un mensaje genérico
+        if "postgres" in error_str.lower() or "psycopg" in error_str.lower():
+            print(f"Error al consultar la base de datos del servidor")
+            return {"codigo": "1", "mensaje": "Error al consultar la base de datos del servidor"}
+        else:
+            print(f"Error desconocido al consultar cita: {e}")
+            return {"codigo": "1", "mensaje": f"Error al consultar información de cita"} 

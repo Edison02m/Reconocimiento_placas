@@ -4,8 +4,8 @@
 Sistema de Detección de Placas Vehiculares - Casabaca
 
 Este es el punto de entrada principal del sistema de detección de placas vehiculares.
-El script inicializa todos los componentes necesarios, verifica las conexiones
-y arranca el servidor web Flask que proporciona la interfaz de usuario.
+El script inicializa todos los componentes necesarios y verifica las conexiones.
+La salida se muestra en consola.
 
 Autor: Edison02m
 Fecha: 2025
@@ -13,33 +13,26 @@ Versión: 1.0
 """
 
 import os
-# Configurar para evitar que Flask intente cargar archivos .env
-os.environ['FLASK_SKIP_DOTENV'] = '1'
-
-from app import create_app
+import time
 from app.database import conectar_db, probar_conexion_servidor
-from app.templates import crear_templates
-from app.monitor import iniciar_monitor
+from app.monitor import iniciar_monitor, obtener_ultima_deteccion
 from app.camera import verificar_conexion_camara
+from app.state import ultima_consulta
 
-def iniciar_servidor():
+def iniciar_sistema():
     """
-    Inicializa y arranca el servidor web.
+    Inicializa el sistema de detección de placas.
     
     Esta función realiza las siguientes tareas:
-    1. Crea los archivos de plantillas HTML necesarios
-    2. Verifica la conexión con la cámara de detección de placas
-    3. Verifica la conexión con el servidor remoto para almacenamiento de datos
-    4. Verifica la conexión con la base de datos local (solo diagnóstico)
-    5. Inicia el hilo de monitoreo para la detección de placas
-    6. Crea e inicia la aplicación web Flask
+    1. Verifica la conexión con la cámara de detección de placas
+    2. Verifica la conexión con el servidor remoto para almacenamiento de datos
+    3. Verifica la conexión con la base de datos local (solo diagnóstico)
+    4. Inicia el hilo de monitoreo para la detección de placas
+    5. Muestra los resultados en consola
     
     Returns:
         None
     """
-    # Crear plantillas antes de iniciar
-    crear_templates()
-    
     print("\n=== VERIFICACIÓN DE COMPONENTES ===")
     
     # Verificar conexión a la cámara
@@ -76,15 +69,48 @@ def iniciar_servidor():
     iniciar_monitor()
     print(" Monitor de placas iniciado")
     
-    # Crear y configurar la aplicación Flask
-    app = create_app()
+    print("\n Sistema listo. Mostrando detecciones en consola...")
+    print("(Presione Ctrl+C para detener)")
     
-    # Iniciar el servidor web
-    print("\n Sistema listo. Iniciando servidor web...")
-    app.run(host='0.0.0.0', port=5000)
+    try:
+        # Bucle principal para mostrar resultados en consola
+        ultima_placa = None
+        while True:
+            try:
+                deteccion = obtener_ultima_deteccion()
+                if deteccion and deteccion["placa"] != ultima_placa:
+                    ultima_placa = deteccion["placa"]
+                    print("\n" + "="*50)
+                    print(f"PLACA DETECTADA: {deteccion['placa']}")
+                    print(f"FECHA: {deteccion['fecha']}")
+                    print(f"ESTADO: {deteccion['mensaje']}")
+                    
+                    if deteccion["tiene_cita"]:
+                        datos_cita = deteccion["datos_cita"]
+                        print("\nDATOS DE LA CITA:")
+                        print(f"  Cliente: {datos_cita.get('nombreCliente', 'N/A')}")
+                        print(f"  Vehículo: {datos_cita.get('descripcionVeh', 'N/A')}")
+                        print(f"  Fecha: {datos_cita.get('fechaCita', 'N/A')}")
+                        print(f"  Hora: {datos_cita.get('horaCita', 'N/A') if 'horaCita' in datos_cita else datos_cita.get('fechaCita', 'N/A').split(' ')[1] if ' ' in datos_cita.get('fechaCita', 'N/A') else 'N/A'}")
+                        print(f"  Asesor: {datos_cita.get('nombreAsesor', datos_cita.get('asesor', 'N/A'))}")
+                        print(f"  OT: {datos_cita.get('ordenrepld', 'N/A')}")
+                        if 'descripcionAlterna' in datos_cita and datos_cita['descripcionAlterna']:
+                            print(f"  Servicio: {datos_cita['descripcionAlterna']}")
+                        if 'agencia' in datos_cita and datos_cita['agencia']:
+                            print(f"  Agencia: {datos_cita['agencia']}")
+                    
+                    print("="*50)
+            except Exception as e:
+                print(f"\nError al procesar detección: {e}")
+                print("El sistema continuará monitoreando...")
+                time.sleep(5)
+            
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\nDetención solicitada por el usuario. Cerrando sistema...")
 
 if __name__ == "__main__":
     print("\n===============================================")
     print("  SISTEMA DE DETECCIÓN DE PLACAS - CASABACA")
     print("===============================================\n")
-    iniciar_servidor() 
+    iniciar_sistema() 

@@ -7,10 +7,7 @@ una nueva placa, realiza las siguientes acciones:
 
 1. Almacena la información de la placa en el servidor remoto
 2. Consulta si el vehículo tiene citas programadas
-3. Actualiza el estado del sistema para mostrar la información en la interfaz web
-
-El monitoreo se ejecuta en un hilo separado (daemon thread) para no bloquear
-la aplicación principal mientras realiza estas tareas.
+3. Actualiza el estado del sistema para mostrar la información en la consola
 """
 
 import time
@@ -18,7 +15,7 @@ import threading
 from app.camera import get_plates
 from app.api_citas import consultar_cita
 from app.database import guardar_placa_en_db
-from app.state import actualizar_datos, crear_id_evento_exacto, eventos_exactos_procesados
+from app.state import actualizar_datos, crear_id_evento_exacto, eventos_exactos_procesados, ultima_consulta
 from app.config import INTERVALO_CONSULTA
 
 def procesar_ultimo_evento():
@@ -31,7 +28,7 @@ def procesar_ultimo_evento():
     2. Verifica si la placa más reciente ya ha sido procesada (evita duplicados)
     3. Guarda la información de la placa en la base de datos
     4. Consulta si el vehículo tiene una cita programada
-    5. Actualiza el estado del sistema para mostrar la información en la web
+    5. Actualiza el estado del sistema para mostrar la información en la consola
     6. Marca el evento como procesado para evitar procesarlo nuevamente
     
     Si no hay placas detectadas o la última ya fue procesada, la función
@@ -40,23 +37,40 @@ def procesar_ultimo_evento():
     Returns:
         None
     """
-    placas = get_plates()
-    if not placas:
-        return
+    try:
+        placas = get_plates()
+        if not placas:
+            return
 
-    ultimo_evento = placas[0]
-    id_evento_exacto = crear_id_evento_exacto(ultimo_evento["placa"], ultimo_evento["fecha"])
-    
-    if id_evento_exacto not in eventos_exactos_procesados:
-        # Guardar la placa en la base de datos
-        guardar_placa_en_db(ultimo_evento["placa"], ultimo_evento["fecha"])
+        ultimo_evento = placas[0]
+        id_evento_exacto = crear_id_evento_exacto(ultimo_evento["placa"], ultimo_evento["fecha"])
         
-        # Consultar cita y actualizar datos para la web
-        resultado_cita = consultar_cita(ultimo_evento["placa"])
-        actualizar_datos(resultado_cita, ultimo_evento["placa"], ultimo_evento["fecha"])
-        
-        # Marcar como procesado
-        eventos_exactos_procesados.add(id_evento_exacto)
+        if id_evento_exacto not in eventos_exactos_procesados:
+            # Guardar la placa en la base de datos
+            try:
+                guardar_placa_en_db(ultimo_evento["placa"], ultimo_evento["fecha"])
+            except Exception as e:
+                print(f"Error al guardar placa en base de datos: {e}")
+                # Continuar a pesar del error
+            
+            try:
+                # Consultar cita y actualizar datos
+                resultado_cita = consultar_cita(ultimo_evento["placa"])
+                actualizar_datos(resultado_cita, ultimo_evento["placa"], ultimo_evento["fecha"])
+            except Exception as e:
+                print(f"Error al consultar cita: {e}")
+                # Si hay error, actualizar con información básica
+                datos_error = {
+                    "codigo": "1",
+                    "mensaje": f"Error al consultar información: {str(e)[:100]}"
+                }
+                actualizar_datos(datos_error, ultimo_evento["placa"], ultimo_evento["fecha"])
+            
+            # Marcar como procesado
+            eventos_exactos_procesados.add(id_evento_exacto)
+    except Exception as e:
+        print(f"Error general en el procesamiento de evento: {e}")
+        # No hacer nada más, esperar al siguiente ciclo
 
 def monitor_thread():
     """
@@ -73,7 +87,11 @@ def monitor_thread():
         None
     """
     while True:
-        procesar_ultimo_evento()
+        try:
+            procesar_ultimo_evento()
+        except Exception as e:
+            print(f"Error en el hilo de monitoreo: {e}")
+            # Continuar a pesar del error
         time.sleep(INTERVALO_CONSULTA)
 
 def iniciar_monitor():
@@ -89,4 +107,18 @@ def iniciar_monitor():
     """
     t = threading.Thread(target=monitor_thread, daemon=True)
     t.start()
-    return t 
+    return t
+
+def obtener_ultima_deteccion():
+    """
+    Obtiene la información de la última placa detectada.
+    
+    Esta función devuelve la información actualizada sobre la última placa
+    detectada por el sistema, incluyendo datos sobre la cita si existe.
+    
+    Returns:
+        dict: Diccionario con los datos de la última detección o None si no hay datos
+    """
+    if ultima_consulta["placa"] is None:
+        return None
+    return ultima_consulta 

@@ -65,13 +65,36 @@ def actualizar_datos(resultado_cita, placa, fecha):
     """
     global ultima_consulta
     
-    # Actualizar los datos para la web
+    # Actualizar los datos básicos
     ultima_consulta["placa"] = placa
     ultima_consulta["fecha"] = fecha.strftime("%Y-%m-%d %H:%M:%S")
     ultima_consulta["actualizado"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
+    # Si resultado_cita es None, establecer mensaje de error
+    if resultado_cita is None:
+        ultima_consulta["tiene_cita"] = False
+        ultima_consulta["datos_cita"] = None
+        ultima_consulta["mensaje"] = "ERROR DE CONEXIÓN"
+        return
+    
+    # Si hay un mensaje de error, mostrarlo correctamente
+    if isinstance(resultado_cita, dict) and "mensaje" in resultado_cita and resultado_cita.get("codigo") == "1":
+        ultima_consulta["tiene_cita"] = False
+        ultima_consulta["datos_cita"] = None
+        ultima_consulta["mensaje"] = resultado_cita["mensaje"]
+        return
+    
+    # Si es un mensaje de error de PostgreSQL, reemplazarlo con un mensaje más amigable
+    if isinstance(resultado_cita, dict) and isinstance(resultado_cita.get("mensaje"), str) and "postgres" in resultado_cita.get("mensaje", "").lower():
+        ultima_consulta["tiene_cita"] = False
+        ultima_consulta["datos_cita"] = None
+        ultima_consulta["mensaje"] = "Error al conectar con el servidor de citas"
+        return
+    
+    # Procesar respuesta normal
     if resultado_cita and "codigo" in resultado_cita:
-        if resultado_cita["codigo"] == "0" and resultado_cita["listadoDatosAgendamiento"]:
+        if resultado_cita["codigo"] == "0" and resultado_cita.get("listadoDatosAgendamiento", []):
+            # Guardar la cita completa tal como viene de la API
             cita = resultado_cita["listadoDatosAgendamiento"][0]
             ultima_consulta["tiene_cita"] = True
             ultima_consulta["datos_cita"] = cita
@@ -83,4 +106,4 @@ def actualizar_datos(resultado_cita, placa, fecha):
     else:
         ultima_consulta["tiene_cita"] = False
         ultima_consulta["datos_cita"] = None
-        ultima_consulta["mensaje"] = "ERROR DE CONEXIÓN" 
+        ultima_consulta["mensaje"] = "FORMATO DE RESPUESTA INVÁLIDO" 
