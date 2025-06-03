@@ -1,12 +1,7 @@
 """
 Módulo de consulta a la API de citas de Casabaca
 
-Este módulo proporciona funcionalidad para consultar el sistema de citas
-de Casabaca Toyota y verificar si un vehículo identificado por su placa
-tiene una cita programada en el concesionario.
-
-La consulta se realiza a través de un servicio web REST que devuelve 
-información detallada de la cita (si existe) en formato JSON.
+Servicio web REST para verificar citas programadas por placa.
 """
 
 import requests
@@ -15,26 +10,13 @@ from app.config import URL_CITAS, NO_CIA, COD_AGENCIA
 
 def consultar_cita(placa):
     """
-    Consulta si un vehículo tiene una cita programada en Casabaca.
-    
-    Realiza una petición HTTP GET a la API de citas de Casabaca 
-    utilizando el número de placa como parámetro de búsqueda, junto
-    con el número de compañía y código de agencia configurados.
-    
-    La respuesta de la API incluye datos como:
-    - Información del cliente (nombre, cédula)
-    - Fecha y hora de la cita
-    - Información del vehículo
-    - Datos del asesor asignado
-    - Número de orden
+    Consulta cita programada por número de placa.
     
     Args:
-        placa (str): Número de placa del vehículo a consultar
+        placa (str): Número de placa del vehículo
         
     Returns:
-        dict: Respuesta JSON de la API de citas con toda la información
-              de la cita programada, o un dict con error si hay problemas
-              en la consulta o el vehículo no tiene cita
+        dict: Datos de la cita o dict con error
     """
     try:
         params = {
@@ -53,7 +35,6 @@ def consultar_cita(placa):
         return {"codigo": "1", "mensaje": "Error al procesar la respuesta del servicio"}
     except Exception as e:
         error_str = str(e)
-        # Si es un error de PostgreSQL, mostrar un mensaje genérico
         if "postgres" in error_str.lower() or "psycopg" in error_str.lower():
             print(f"Error al consultar la base de datos del servidor")
             return {"codigo": "1", "mensaje": "Error al consultar la base de datos del servidor"}

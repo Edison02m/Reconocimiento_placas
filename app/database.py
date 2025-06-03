@@ -1,16 +1,9 @@
 """
 Módulo de gestión de datos para el Sistema de Detección de Placas
 
-Este módulo maneja todas las operaciones relacionadas con el almacenamiento
-y recuperación de datos de placas vehiculares detectadas. Proporciona funciones para:
-
-1. Conectarse a una base de datos MySQL local (solo para diagnóstico)
-2. Enviar los datos de placas detectadas a un servidor remoto
-3. Recuperar el historial de detecciones con capacidades de paginación y filtrado
-4. Probar la conectividad con el servidor remoto
-
-El sistema está diseñado para enviar todos los datos al servidor remoto (PHP/MySQL),
-manteniendo la base de datos local solo para propósitos de diagnóstico.
+Maneja almacenamiento y recuperación de datos de placas vehiculares.
+Diseñado para enviar datos a servidor remoto PHP/MySQL.
+Base de datos local solo para diagnóstico.
 """
 
 import mysql.connector
@@ -26,15 +19,10 @@ load_dotenv()
 
 def conectar_db():
     """
-    Establece y retorna una conexión a la base de datos MySQL local.
-    
-    Esta función se mantiene principalmente para verificar la conexión durante
-    el diagnóstico del sistema. En la operación normal, los datos se envían
-    directamente al servidor remoto y no se almacenan localmente.
+    Establece conexión a la base de datos MySQL local (solo diagnóstico).
     
     Returns:
-        mysql.connector.connection.MySQLConnection: Objeto de conexión a MySQL 
-                                                   o None si hay error
+        mysql.connector.connection.MySQLConnection o None si hay error
     """
     try:
         connection = mysql.connector.connect(**DB_CONFIG)
@@ -45,21 +33,16 @@ def conectar_db():
 
 def enviar_placa_al_servidor(placa, fecha, hora, origen="Cámara IP"):
     """
-    Envía los datos de una placa detectada al servidor remoto.
-    
-    Realiza una petición HTTP POST al servidor remoto (PHP) para almacenar
-    la información de una placa detectada. Esta es la función principal
-    para el almacenamiento de datos en el sistema.
+    Envía datos de placa al servidor remoto vía HTTP POST.
     
     Args:
         placa (str): Número de placa detectado
         fecha (str): Fecha en formato YYYY-MM-DD
         hora (str): Hora en formato HH:MM:SS
-        origen (str): Fuente de la detección (por defecto "Cámara IP")
+        origen (str): Fuente de la detección
         
     Returns:
-        tuple: (bool, str) - (True/False si se envió correctamente, 
-                             Mensaje del servidor o descripción del error)
+        tuple: (bool, str) - (éxito, mensaje)
     """
     # Dirección IP del servidor Windows Server desde variables de entorno
     base_url = os.getenv('REMOTE_SERVER_URL')
@@ -85,25 +68,15 @@ def enviar_placa_al_servidor(placa, fecha, hora, origen="Cámara IP"):
 
 def obtener_historial_placas(pagina=1, registros_por_pagina=10, filtro_placa=None):
     """
-    Obtiene el historial de placas detectadas desde el servidor remoto con paginación.
-    
-    Recupera los registros de placas detectadas almacenados en el servidor remoto,
-    implementando capacidades de paginación y filtrado. Esta función es utilizada
-    principalmente por el panel de administración para mostrar el historial.
+    Obtiene historial de placas desde servidor remoto con paginación.
     
     Args:
-        pagina (int): Número de página a mostrar (iniciando en 1)
+        pagina (int): Número de página (desde 1)
         registros_por_pagina (int): Cantidad de registros por página
-        filtro_placa (str, opcional): Filtrar resultados por número de placa
+        filtro_placa (str, opcional): Filtro por número de placa
         
     Returns:
-        dict: Diccionario con los siguientes campos:
-            - registros: Lista de diccionarios con los datos de las placas
-            - total_registros: Cantidad total de registros disponibles
-            - total_paginas: Número total de páginas
-            - pagina_actual: Número de página actual
-            - registros_por_pagina: Cantidad de registros por página
-            - error: Mensaje de error (solo presente si hay un error)
+        dict: Con registros, metadatos de paginación y posible error
     """
     base_url = os.getenv('REMOTE_SERVER_URL')
     url = f"{base_url}/leer.php"
@@ -203,19 +176,16 @@ def obtener_historial_placas(pagina=1, registros_por_pagina=10, filtro_placa=Non
 
 def guardar_placa_en_db(placa, fecha, origen="Cámara IP"):
     """
-    Guarda un registro de placa detectada en el servidor remoto.
-    
-    Esta función actúa como punto de entrada principal para guardar
-    los datos de una nueva placa detectada. Convierte el objeto datetime
-    en formato de texto adecuado y envía los datos al servidor remoto.
+    Punto de entrada para guardar placa en servidor remoto.
+    Convierte datetime a formato texto para envío.
     
     Args:
-        placa (str): Número de placa detectado
-        fecha (datetime): Objeto datetime con la fecha y hora de la detección
-        origen (str): Fuente de la detección. Por defecto "Cámara IP"
+        placa (str): Número de placa
+        fecha (datetime): Fecha y hora de detección
+        origen (str): Fuente de detección
         
     Returns:
-        bool: True si se guardó correctamente, False en caso contrario
+        bool: Éxito de la operación
     """
     # Extraer fecha y hora por separado del objeto datetime
     fecha_str = fecha.strftime("%Y-%m-%d")
@@ -227,14 +197,11 @@ def guardar_placa_en_db(placa, fecha, origen="Cámara IP"):
 
 def probar_conexion_servidor():
     """
-    Prueba la conexión con el servidor remoto de almacenamiento.
-    
-    Verifica si el servidor remoto está accesible sin enviar datos de prueba.
-    Esta función se utiliza principalmente durante el inicio del sistema
-    para comprobar la disponibilidad del servidor de almacenamiento.
+    Prueba conexión al servidor remoto sin enviar datos.
+    Utilizada durante el inicio del sistema.
     
     Returns:
-        bool: True si la conexión es exitosa, False en caso contrario
+        bool: Éxito de la conexión
     """
     print("\nProbando conexión al servidor remoto...")
     base_url = os.getenv('REMOTE_SERVER_URL')

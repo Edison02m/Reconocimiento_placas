@@ -38,6 +38,12 @@ Thumbs.db
 # Logs
 *.log
 
+# Variables de entorno
+.env
+.env.local
+.env.development
+.env.test
+.env.production
 
 ngrok.exe
 ngrok.zip
