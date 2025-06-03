@@ -9,27 +9,33 @@ Los parámetros se organizan en secciones según su función:
 - Configuración de la API de citas
 - Configuración de la base de datos MySQL
 
-Nota: En un entorno de producción, es recomendable almacenar credenciales
-sensibles utilizando variables de entorno u otros métodos seguros.
+Las credenciales y datos sensibles se cargan desde un archivo .env
+para mayor seguridad y facilidad de configuración.
 """
+
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
 
 # Configuración de la cámara/API de placas
 # ---------------------------------------
 # URL de la API de la cámara Hikvision para detección de placas
-URL = "http://192.168.20.45/ISAPI/Traffic/channels/1/vehicleDetect/plates"
+URL = os.getenv('CAMERA_URL')
 # Credenciales de autenticación para la cámara
-USERNAME = "admin"
-PASSWORD = "Telcomexpert01"
+USERNAME = os.getenv('CAMERA_USERNAME')
+PASSWORD = os.getenv('CAMERA_PASSWORD')
 # Intervalo en segundos entre consultas consecutivas a la cámara
-INTERVALO_CONSULTA = 1  
+INTERVALO_CONSULTA = int(os.getenv('INTERVALO_CONSULTA', 1))
 
 # Configuración de la API de citas
 # ---------------------------------------
 # URL del servicio web para consultar citas por número de placa
-URL_CITAS = "http://192.168.20.137:80/casabacaWebservices/agendamientoCitas/consultaPorPlaca"
+URL_CITAS = os.getenv('URL_CITAS')
 # Parámetros de identificación de la compañía y agencia
-NO_CIA = "08"
-COD_AGENCIA = "05"
+NO_CIA = os.getenv('NO_CIA')
+COD_AGENCIA = os.getenv('COD_AGENCIA')
 
 # XML con la fecha de inicio de búsqueda para filtrar eventos de la cámara
 # ---------------------------------------
@@ -49,8 +55,8 @@ HEADERS = {
 # ---------------------------------------
 # Esta configuración se utiliza solo para diagnóstico, los datos se envían al servidor remoto
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "admin123",  # Para producción, usar variables de entorno
-    "database": "placas"
-} 
+    "host": os.getenv('DB_HOST', 'localhost'),
+    "user": os.getenv('DB_USER', 'root'),
+    "password": os.getenv('DB_PASSWORD'),
+    "database": os.getenv('DB_DATABASE', 'placas')
+}

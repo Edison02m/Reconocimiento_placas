@@ -17,7 +17,12 @@ import mysql.connector
 from mysql.connector import Error
 from datetime import datetime
 import requests
+import os
+from dotenv import load_dotenv
 from app.config import DB_CONFIG
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
 
 def conectar_db():
     """
@@ -56,8 +61,9 @@ def enviar_placa_al_servidor(placa, fecha, hora, origen="Cámara IP"):
         tuple: (bool, str) - (True/False si se envió correctamente, 
                              Mensaje del servidor o descripción del error)
     """
-    # Dirección IP del servidor Windows Server
-    url = "http://192.168.20.200/insertar.php"
+    # Dirección IP del servidor Windows Server desde variables de entorno
+    base_url = os.getenv('REMOTE_SERVER_URL')
+    url = f"{base_url}/insertar.php"
     
     # Datos a enviar
     data = {
@@ -99,7 +105,8 @@ def obtener_historial_placas(pagina=1, registros_por_pagina=10, filtro_placa=Non
             - registros_por_pagina: Cantidad de registros por página
             - error: Mensaje de error (solo presente si hay un error)
     """
-    url = "http://192.168.20.200/leer.php"
+    base_url = os.getenv('REMOTE_SERVER_URL')
+    url = f"{base_url}/leer.php"
     
     # Parámetros para la paginación (si el servidor lo soporta)
     params = {}
@@ -230,7 +237,8 @@ def probar_conexion_servidor():
         bool: True si la conexión es exitosa, False en caso contrario
     """
     print("\nProbando conexión al servidor remoto...")
-    url = "http://192.168.20.200/leer.php"
+    base_url = os.getenv('REMOTE_SERVER_URL')
+    url = f"{base_url}/leer.php"
     
     try:
         # Solo verificar si podemos conectarnos al servidor

@@ -19,8 +19,3 @@ CREATE TABLE IF NOT EXISTS registro_placas (
 -- Crear índices para mejorar el rendimiento de las consultas
 CREATE INDEX idx_placa ON registro_placas(placa);
 CREATE INDEX idx_fecha ON registro_placas(fecha);
-
--- Añadir usuario de aplicación (opcional - ajustar según necesidades)
--- CREATE USER 'placas_app'@'localhost' IDENTIFIED BY 'password_seguro';
--- GRANT SELECT, INSERT, UPDATE ON placas.* TO 'placas_app'@'localhost';
--- FLUSH PRIVILEGES; 
