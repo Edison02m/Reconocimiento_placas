@@ -14,10 +14,9 @@ Versión: 1.0
 
 import os
 import time
-from app.database import conectar_db, probar_conexion_servidor
+from app.database import probar_conexion_servidor
 from app.monitor import iniciar_monitor, obtener_ultima_deteccion
 from app.camera import verificar_conexion_camara
-from app.state import ultima_consulta
 
 def iniciar_sistema():
     """
@@ -51,17 +50,6 @@ def iniciar_sistema():
         print(" ERROR CRÍTICO: No hay conexión con el servidor remoto!")
         print("   Las placas detectadas NO serán almacenadas")
     
-    # Verificar conexión a la base de datos local (solo para diagnóstico)
-    print("\n3. Verificando conexión a la base de datos local...")
-    conn = conectar_db()
-    if conn:
-        print(" Conexión a la base de datos local exitosa (solo para diagnóstico)")
-        print("   Nota: Los datos se almacenarán ÚNICAMENTE en el servidor remoto")
-        conn.close()
-    else:
-        print(" No se pudo conectar a la base de datos local")
-        print("   Nota: Esto no afecta el funcionamiento, los datos se envían al servidor remoto")
-    
     print("\n=== INICIANDO SERVICIOS ===")
     
     # Iniciar hilo de monitoreo
@@ -70,7 +58,7 @@ def iniciar_sistema():
     print(" Monitor de placas iniciado")
     
     print("\n Sistema listo. Mostrando detecciones en consola...")
-    print("(Presione Ctrl+C para detener)")
+    print("(Presione Ctrl+C para detener) \n")
     
     try:
         # Bucle principal para mostrar resultados en consola
@@ -111,6 +99,6 @@ def iniciar_sistema():
 
 if __name__ == "__main__":
     print("\n===============================================")
-    print("  SISTEMA DE DETECCIÓN DE PLACAS - CASABACA")
+    print("  SISTEMA DE DETECCIÓN DE PLACAS - SUZUKI")
     print("===============================================\n")
     iniciar_sistema() 

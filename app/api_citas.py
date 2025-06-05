@@ -22,7 +22,7 @@ def consultar_cita(placa):
         params = {
             "noCia": NO_CIA,
             "placa": placa,
-            "codAgencia": COD_AGENCIA
+            "agencia": COD_AGENCIA
         }
         response = requests.get(URL_CITAS, params=params, timeout=10)
         response.raise_for_status()
