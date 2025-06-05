@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS registro_placas (
     placa VARCHAR(20) NOT NULL,
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
-    origen VARCHAR(50) DEFAULT 'Cámara IP',
+    origen VARCHAR(50),
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
