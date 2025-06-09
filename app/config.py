@@ -1,38 +1,27 @@
 """
-Archivo de configuración global del Sistema de Detección de Placas
+Configuración global del Sistema de Detección de Placas
 
-Este módulo centraliza todas las variables de configuración utilizadas por 
-los diferentes componentes del sistema, facilitando su mantenimiento y ajuste.
-
-Los parámetros se organizan en secciones según su función:
-- Configuración de la cámara/API de placas
-- Configuración de la API de citas
-- Configuración de la base de datos MySQL
-
-Nota: En un entorno de producción, es recomendable almacenar credenciales
-sensibles utilizando variables de entorno u otros métodos seguros.
+Carga variables desde .env para seguridad de credenciales.
 """
 
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
+
 # Configuración de la cámara/API de placas
-# ---------------------------------------
-# URL de la API de la cámara Hikvision para detección de placas
-URL = "http://192.168.20.45/ISAPI/Traffic/channels/1/vehicleDetect/plates"
-# Credenciales de autenticación para la cámara
-USERNAME = "admin"
-PASSWORD = "Telcomexpert01"
-# Intervalo en segundos entre consultas consecutivas a la cámara
-INTERVALO_CONSULTA = 1  
+URL = os.getenv('CAMERA_URL')
+USERNAME = os.getenv('CAMERA_USERNAME')
+PASSWORD = os.getenv('CAMERA_PASSWORD')
+INTERVALO_CONSULTA = int(os.getenv('INTERVALO_CONSULTA', 1))
 
 # Configuración de la API de citas
-# ---------------------------------------
-# URL del servicio web para consultar citas por número de placa
-URL_CITAS = "http://192.168.20.138/casabacaWebservices/agendamientoCitas/consultaPorPlaca"
-# Parámetros de identificación de la compañía y agencia
-NO_CIA = "08"
-COD_AGENCIA = "05"
+URL_CITAS = os.getenv('URL_CITAS')
+NO_CIA = os.getenv('NO_CIA')
+COD_AGENCIA = os.getenv('COD_AGENCIA')
 
-# XML con la fecha de inicio de búsqueda para filtrar eventos de la cámara
-# ---------------------------------------
+# XML con fecha de inicio para filtrar eventos
 BODY_XML = """
 <AfterTime>
     <picTime>20250415T000000-500</picTime>
@@ -45,12 +34,10 @@ HEADERS = {
     "Accept": "application/xml"
 }
 
-# Configuración de la base de datos MySQL
-# ---------------------------------------
-# Esta configuración se utiliza solo para diagnóstico, los datos se envían al servidor remoto
+# Configuración de la base de datos MySQL (solo diagnóstico)
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "admin123",  # Para producción, usar variables de entorno
-    "database": "placas"
-} 
+    "host": os.getenv('DB_HOST', 'localhost'),
+    "user": os.getenv('DB_USER', 'root'),
+    "password": os.getenv('DB_PASSWORD'),
+    "database": os.getenv('DB_DATABASE', 'placas')
+}
