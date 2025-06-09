@@ -9,7 +9,7 @@ USE placas;
 -- Crear la tabla para el registro de placas
 CREATE TABLE IF NOT EXISTS registro_placas (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    placa VARCHAR(20) NOT NULL,
+    placa VARCHAR(20) NOT NULL,---
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
     origen VARCHAR(50),
