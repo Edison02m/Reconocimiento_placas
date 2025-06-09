@@ -1,52 +1,61 @@
-# Sistema de Detección de Placas - Suzuki
+# Sistema de Detección de Placas Vehiculares - Suzuki
 
-Sistema profesional para la detección automática de placas vehiculares y verificación de citas programadas en concesionarios Suzuki.
+Sistema profesional para la detección automática de placas vehiculares, verificación de citas programadas y registro remoto en concesionarios Suzuki Ecuador. El sistema integra cámaras ANPR Hikvision, consulta una API de citas y almacena los eventos en un servidor remoto. Todo el flujo es monitoreado y mostrado en consola en tiempo real.
 
 ## Características principales
 
-- **Detección automática**: Captura y reconocimiento de placas vehiculares en tiempo real
-- **Verificación de citas**: Integración con la API de agendamiento de Suzuki
-- **Salida por consola**: Muestra información clara sobre placas detectadas y estado de citas
-- **Registro remoto**: Envía los datos de placas detectadas a un servidor remoto
-- **Monitoreo de dispositivos**: Verificación del estado de las cámaras
-- **Configuración flexible**: Variables de entorno para personalización fácil
+- **Detección automática**: Captura y reconocimiento de placas vehiculares en tiempo real usando cámaras Hikvision ANPR.
+- **Limpieza y validación**: Las placas detectadas son limpiadas automáticamente (se eliminan todos los caracteres especiales, solo quedan letras y números) antes de ser procesadas o almacenadas.
+- **Verificación de citas**: Integración directa con la API de agendamiento de Suzuki para consultar citas por placa.
+- **Registro remoto**: Todas las placas detectadas se envían automáticamente a un servidor remoto PHP/MySQL vía HTTP POST. La base de datos local es solo para diagnóstico.
+- **Monitoreo continuo**: Un hilo daemon verifica constantemente nuevas placas y actualiza el estado global del sistema.
+- **Salida por consola**: Visualización clara y detallada de cada evento detectado, incluyendo datos de la cita si existe.
+- **Configuración flexible**: Variables de entorno (.env) para personalizar URLs, credenciales y parámetros de consulta.
 
 ## Estructura del Proyecto
 
-El proyecto sigue una estructura modular para facilitar su mantenimiento:
+El proyecto sigue una estructura modular para facilitar su mantenimiento y escalabilidad:
 
 ```
 ├── app/
 │   ├── __init__.py        # Inicialización del paquete
-│   ├── config.py          # Configuración global y variables de entorno
-│   ├── camera.py          # Comunicación con la cámara IP
-│   ├── api_citas.py       # Integración con la API de citas de Suzuki
-│   ├── database.py        # Envío de datos al servidor remoto
-│   ├── monitor.py         # Monitoreo continuo de placas
-│   └── state.py           # Estado compartido
-├── .env                   # Configuración de entorno
-└── run.py                 # Punto de entrada principal
+│   ├── config.py          # Carga y gestión de variables de entorno (.env)
+│   ├── camera.py          # Comunicación con la cámara Hikvision ANPR (detección y limpieza de placas)
+│   ├── api_citas.py       # Consulta a la API de citas de Suzuki
+│   ├── database.py        # Envío de datos de placas al servidor remoto (PHP/MySQL)
+│   ├── monitor.py         # Hilo de monitoreo continuo y procesamiento de eventos
+│   └── state.py           # Estado global de la aplicación y control de duplicados
+├── .env                   # Variables de entorno (no se sube al repo)
+├── requirements.txt       # Dependencias de Python
+├── run.py                 # Punto de entrada principal del sistema
+├── database_setup.sql     # Script ejemplo de base diagnóstica local (opcional)
 ```
+
+## Flujo de funcionamiento principal
+
+1. **Inicialización**: El sistema verifica la conexión con la cámara y el servidor remoto.
+2. **Monitoreo**: Un hilo en segundo plano consulta periódicamente la cámara por nuevas placas detectadas.
+3. **Limpieza de placas**: Cada placa es limpiada con una expresión regular para eliminar caracteres especiales (solo quedan letras y números).
+4. **Almacenamiento**: La placa y la fecha/hora de detección se envían al servidor remoto vía HTTP POST.
+5. **Consulta de cita**: Se consulta la API de Suzuki para verificar si la placa tiene cita programada.
+6. **Visualización**: Toda la información se muestra en consola en tiempo real, incluyendo detalles de la cita si existe.
 
 ## Funcionalidades detalladas
 
-### Detección de placas
-- Utiliza cámaras Hikvision con capacidad ANPR (Automatic Number Plate Recognition)
-- Comunicación vía API REST con formato XML
-- Procesamiento de eventos de detección en tiempo real
+### Detección y limpieza de placas
+- Uso de cámaras Hikvision ANPR (API REST/XML)
+- Limpieza automática de placas detectadas (`re.sub(r'[^A-Za-z0-9]', '', plate_number)`) para asegurar consistencia
+- Procesamiento de eventos en tiempo real
 
 ### Consulta de citas
-- Integración con la API de citas de Suzuki
-- Verificación en tiempo real de citas programadas
-- Estados de respuesta:
-  - CITA ENCONTRADA: Cuando el vehículo tiene una cita programada
-  - NO SE ENCONTRARON RESULTADOS: Cuando no hay cita registrada
-- Validación de formato de placas para asegurar consistencia
+- Integración directa con la API REST de Suzuki
+- Consulta y visualización de citas por placa
+- Manejo robusto de errores y mensajes claros en consola
 
-### Almacenamiento de datos
-- Registro completo de todas las placas detectadas
-- Envío automático a servidor remoto mediante peticiones HTTP
-- Configuración flexible del servidor remoto mediante variables de entorno
+### Almacenamiento y diagnóstico
+- Registro automático de todas las placas detectadas en un servidor remoto
+- Diagnóstico y pruebas de conexión disponibles desde consola
+- Base de datos local solo para pruebas/diagnóstico
 
 ## Hardware compatible
 
@@ -65,83 +74,77 @@ El proyecto sigue una estructura modular para facilitar su mantenimiento:
 
 ## Instalación
 
-1. Clona el repositorio:
+1. Clona el repositorio o copia los archivos al servidor:
 
 ```bash
 git clone https://github.com/Edison02m/Reconocimiento_placas.git
 cd Reconocimiento_placas
 ```
 
-2. Instala las dependencias:
+2. Instala las dependencias de Python:
 
 ```bash
 pip install -r requirements.txt
 ```
 
 3. Configura las variables de entorno:
-   - Copia el archivo `.env.example` a `.env`
+   - Crea un archivo `.env` en la raíz del proyecto (puedes copiar y renombrar `.env.example` si existe).
    - Edita el archivo `.env` con la configuración de tu entorno:
-     - Configuración de la cámara (URL, usuario, contraseña)
+     - URL y credenciales de la cámara Hikvision
      - URL de la API de citas de Suzuki
      - Código de compañía y agencia
      - URL del servidor remoto para registro de placas
 
 ## Uso
 
-Para iniciar el sistema:
+Para iniciar el sistema, ejecuta:
 
 ```bash
 python run.py
 ```
 
-El sistema mostrará la información de placas detectadas y citas en la consola. Para detener el sistema, presione Ctrl+C.
+El sistema mostrará en consola cada placa detectada, la fecha/hora, el estado de la cita (si existe), y los datos principales de la cita. Para detener el sistema, presiona Ctrl+C.
 
 ## Configuración del entorno
 
-El archivo `.env` debe contener las siguientes variables:
+El archivo `.env` debe contener las siguientes variables (ajusta según tu entorno):
 
 ```
-# Configuración de la cámara/API de placas
+# Configuración de la cámara Hikvision
 CAMERA_URL=http://direccion-ip-camara/ISAPI/Traffic/channels/1/vehicleDetect/plates
 CAMERA_USERNAME=usuario
 CAMERA_PASSWORD=contraseña
 INTERVALO_CONSULTA=1
 
-# Configuración de la API de citas
+# Configuración de la API de citas Suzuki
 URL_CITAS=https://s3s.suzukiecuador.com/casabacaWebservices/agendamientoCitas/consultaPorPlaca
 NO_CIA=08
 COD_AGENCIA=06
 
-# Configuración del servidor remoto
+# Configuración del servidor remoto para registro de placas
 REMOTE_SERVER_URL=http://direccion-ip-servidor
 ```
 
-## Mejoras implementadas
+## Mejoras y detalles técnicos relevantes
 
-### 1. Integración con API de Suzuki
-- Consulta directa a la API de citas de Suzuki
-- Validación de formato de placas
-- Manejo de errores mejorado
-
-### 2. Optimización de código
-- Eliminación de código innecesario
-- Mejor manejo de recursos
-- Código más limpio y mantenible
-
-### 3. Despliegue simplificado
-- Configuración mediante variables de entorno
-- Sin dependencias de bases de datos locales
-- Fácil integración con sistemas existentes
+- Limpieza de placas: Antes de guardar o consultar una placa, se eliminan todos los caracteres especiales (solo letras y números) para evitar errores y asegurar consistencia (ver función `get_plates()` en `camera.py`).
+- El almacenamiento principal es remoto (servidor PHP/MySQL), la base de datos local es solo diagnóstica.
+- El sistema es tolerante a fallos: errores de conexión o API no detienen el monitoreo.
+- El monitoreo y procesamiento es completamente asíncrono y en tiempo real.
+- Toda la configuración sensible se realiza vía variables de entorno.
 
 ## Solución de problemas
 
-- **Error de conexión a la cámara**: Verifica la URL, usuario y contraseña en el archivo `.env`
-- **Error al consultar citas**: Asegúrate de que el servidor tenga acceso a Internet y a la API de Suzuki
-- **Placas no detectadas**: Verifica la configuración de la cámara y la calidad de la imagen
+- **Error de conexión a la cámara**: Verifica la URL, usuario y contraseña en el archivo `.env` y la conectividad de red.
+- **Error al consultar citas**: Asegúrate de que el servidor tenga acceso a Internet y la URL de la API esté correctamente configurada.
+- **Placas no detectadas**: Revisa la configuración de la cámara, la calidad de la imagen y que la cámara tenga capacidad ANPR.
+- **Datos no almacenados**: Verifica la URL del servidor remoto y la conectividad.
 
-## Soporte
+## Soporte y contribución
 
 Para soporte técnico, contacta al equipo de desarrollo.
+
+Si deseas contribuir, abre un issue o pull request en el repositorio oficial.
 
 ## Licencia
 
