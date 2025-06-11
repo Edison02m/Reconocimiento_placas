@@ -6,7 +6,7 @@ Servicio web REST para verificar citas programadas por placa.
 
 import requests
 import json
-from app.config import URL_CITAS, NO_CIA, COD_AGENCIA
+from app.config import URL_CITAS, NO_CIA, AGENCIA
 
 def consultar_cita(placa):
     """
@@ -22,7 +22,7 @@ def consultar_cita(placa):
         params = {
             "noCia": NO_CIA,
             "placa": placa,
-            "agencia": COD_AGENCIA
+            "agencia": AGENCIA
         }
         response = requests.get(URL_CITAS, params=params, timeout=10)
         response.raise_for_status()

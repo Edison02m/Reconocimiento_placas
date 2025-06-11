@@ -19,7 +19,7 @@ INTERVALO_CONSULTA = int(os.getenv('INTERVALO_CONSULTA', 1))
 # Configuración de la API de citas
 URL_CITAS = os.getenv('URL_CITAS')
 NO_CIA = os.getenv('NO_CIA')
-COD_AGENCIA = os.getenv('COD_AGENCIA')
+AGENCIA = os.getenv('AGENCIA')
 
 # XML con fecha de inicio para filtrar eventos, no necesario
 BODY_XML = """
