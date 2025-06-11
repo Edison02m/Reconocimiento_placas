@@ -24,7 +24,7 @@ def verificar_conexion_camara():
             headers=HEADERS,
             data=BODY_XML.encode('utf-8'),
             auth=HTTPDigestAuth(USERNAME, PASSWORD),
-            timeout=5  # Reducido para hacer la verificación más rápida
+            timeout=5 
         )
         response.raise_for_status()
         return True, "Conexión exitosa con la cámara"
@@ -65,14 +65,11 @@ def get_plates():
         root = ET.fromstring(response.content)
         plates = []
 
-        # Detectar el namespace correcto del XML
         namespace = root.tag.split('}')[0].strip('{') if '}' in root.tag else None
         ns = {'ns': namespace} if namespace else None
 
-        # Buscar todas las placas
         xpath = ".//ns:Plate" if namespace else ".//Plate"
         for plate in root.findall(xpath, ns):
-            # Función auxiliar para obtener texto con o sin namespace
             def get_text(element, tag):
                 return (element.findtext(f"ns:{tag}", namespaces=ns) if namespace 
                        else element.findtext(tag))
@@ -82,11 +79,8 @@ def get_plates():
             country = get_text(plate, "country")
 
             if plate_number and capture_time:
-                # Convertir el formato de hora a uno que Python pueda entender
                 capture_time = capture_time.replace("-500", "-0500")
                 
-                # Eliminar caracteres especiales de la placa
-                # Solo mantener letras y números
                 import re
                 plate_number_cleaned = re.sub(r'[^A-Za-z0-9]', '', plate_number)
                 
@@ -105,7 +99,6 @@ def get_plates():
         return plates
 
     except Exception:
-        # Devolver lista vacía en caso de error
         return []
 
 def probar_conexion():

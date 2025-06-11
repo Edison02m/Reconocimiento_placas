@@ -1,5 +1,5 @@
 """
-Módulo de consulta a la API de citas de Casabaca
+Módulo de consulta a la API de citas 
 
 Servicio web REST para verificar citas programadas por placa.
 """

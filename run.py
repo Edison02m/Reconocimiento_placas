@@ -14,7 +14,6 @@ Versión: 1.0
 
 import os
 import time
-from app.database import probar_conexion_servidor
 from app.monitor import iniciar_monitor, obtener_ultima_deteccion
 from app.camera import verificar_conexion_camara
 
@@ -24,10 +23,8 @@ def iniciar_sistema():
     
     Esta función realiza las siguientes tareas:
     1. Verifica la conexión con la cámara de detección de placas
-    2. Verifica la conexión con el servidor remoto para almacenamiento de datos
-    3. Verifica la conexión con la base de datos local (solo diagnóstico)
-    4. Inicia el hilo de monitoreo para la detección de placas
-    5. Muestra los resultados en consola
+    2. Inicia el hilo de monitoreo para la detección de placas
+    3. Muestra los resultados en consola
     
     Returns:
         None
@@ -42,13 +39,6 @@ def iniciar_sistema():
     else:
         print(f" Advertencia: {mensaje}")
         print("   El sistema se iniciará pero es posible que no detecte placas.")
-    
-    # Verificar conexión al servidor remoto
-    print("\n2. Verificando conexión con el servidor remoto...")
-    servidor_conectado = probar_conexion_servidor()
-    if not servidor_conectado:
-        print(" ERROR CRÍTICO: No hay conexión con el servidor remoto!")
-        print("   Las placas detectadas NO serán almacenadas")
     
     print("\n=== INICIANDO SERVICIOS ===")
     

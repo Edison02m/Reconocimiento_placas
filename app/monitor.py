@@ -5,16 +5,14 @@ Este módulo implementa un sistema de monitoreo en segundo plano que verifica
 continuamente si hay nuevas placas detectadas por la cámara. Cuando detecta
 una nueva placa, realiza las siguientes acciones:
 
-1. Almacena la información de la placa en el servidor remoto
-2. Consulta si el vehículo tiene citas programadas
-3. Actualiza el estado del sistema para mostrar la información en la consola
+1. Consulta si el vehículo tiene citas programadas
+2. Actualiza el estado del sistema para mostrar la información en la consola
 """
 
 import time
 import threading
 from app.camera import get_plates
 from app.api_citas import consultar_cita
-from app.database import guardar_placa_en_db
 from app.state import actualizar_datos, crear_id_evento_exacto, eventos_exactos_procesados, ultima_consulta
 from app.config import INTERVALO_CONSULTA
 
@@ -26,10 +24,9 @@ def procesar_ultimo_evento():
     una nueva placa:
     1. Obtiene la lista de placas detectadas recientemente
     2. Verifica si la placa más reciente ya ha sido procesada (evita duplicados)
-    3. Guarda la información de la placa en la base de datos
-    4. Consulta si el vehículo tiene una cita programada
-    5. Actualiza el estado del sistema para mostrar la información en la consola
-    6. Marca el evento como procesado para evitar procesarlo nuevamente
+    3. Consulta si el vehículo tiene una cita programada
+    4. Actualiza el estado del sistema para mostrar la información en la consola
+    5. Marca el evento como procesado para evitar procesarlo nuevamente
     
     Si no hay placas detectadas o la última ya fue procesada, la función
     termina sin realizar ninguna acción.
@@ -46,31 +43,19 @@ def procesar_ultimo_evento():
         id_evento_exacto = crear_id_evento_exacto(ultimo_evento["placa"], ultimo_evento["fecha"])
         
         if id_evento_exacto not in eventos_exactos_procesados:
-            # Guardar la placa en la base de datos
             try:
-                guardar_placa_en_db(ultimo_evento["placa"], ultimo_evento["fecha"])
-            except Exception as e:
-                print(f"Error al guardar placa en base de datos: {e}")
-                # Continuar a pesar del error
-            
-            try:
-                # Consultar cita y actualizar datos
                 resultado_cita = consultar_cita(ultimo_evento["placa"])
                 actualizar_datos(resultado_cita, ultimo_evento["placa"], ultimo_evento["fecha"])
             except Exception as e:
                 print(f"Error al consultar cita: {e}")
-                # Si hay error, actualizar con información básica
                 datos_error = {
                     "codigo": "1",
                     "mensaje": f"Error al consultar información: {str(e)[:100]}"
                 }
                 actualizar_datos(datos_error, ultimo_evento["placa"], ultimo_evento["fecha"])
-            
-            # Marcar como procesado
             eventos_exactos_procesados.add(id_evento_exacto)
     except Exception as e:
         print(f"Error general en el procesamiento de evento: {e}")
-        # No hacer nada más, esperar al siguiente ciclo
 
 def monitor_thread():
     """
@@ -91,7 +76,6 @@ def monitor_thread():
             procesar_ultimo_evento()
         except Exception as e:
             print(f"Error en el hilo de monitoreo: {e}")
-            # Continuar a pesar del error
         time.sleep(INTERVALO_CONSULTA)
 
 def iniciar_monitor():

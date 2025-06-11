@@ -21,7 +21,7 @@ URL_CITAS = os.getenv('URL_CITAS')
 NO_CIA = os.getenv('NO_CIA')
 COD_AGENCIA = os.getenv('COD_AGENCIA')
 
-# XML con fecha de inicio para filtrar eventos
+# XML con fecha de inicio para filtrar eventos, no necesario
 BODY_XML = """
 <AfterTime>
     <picTime>20250415T000000-500</picTime>
@@ -32,12 +32,4 @@ BODY_XML = """
 HEADERS = {
     "Content-Type": "application/xml",
     "Accept": "application/xml"
-}
-
-# Configuración de la base de datos MySQL (solo diagnóstico)
-DB_CONFIG = {
-    "host": os.getenv('DB_HOST', 'localhost'),
-    "user": os.getenv('DB_USER', 'root'),
-    "password": os.getenv('DB_PASSWORD'),
-    "database": os.getenv('DB_DATABASE', 'placas')
 }

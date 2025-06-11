@@ -84,13 +84,6 @@ def actualizar_datos(resultado_cita, placa, fecha):
         ultima_consulta["mensaje"] = resultado_cita["mensaje"]
         return
     
-    # Si es un mensaje de error de PostgreSQL, reemplazarlo con un mensaje más amigable
-    if isinstance(resultado_cita, dict) and isinstance(resultado_cita.get("mensaje"), str) and "postgres" in resultado_cita.get("mensaje", "").lower():
-        ultima_consulta["tiene_cita"] = False
-        ultima_consulta["datos_cita"] = None
-        ultima_consulta["mensaje"] = "Error al conectar con el servidor de citas"
-        return
-    
     # Procesar respuesta normal
     if resultado_cita and "codigo" in resultado_cita:
         if resultado_cita["codigo"] == "0" and resultado_cita.get("listadoDatosAgendamiento", []):
