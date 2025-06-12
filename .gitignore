@@ -45,5 +45,3 @@ Thumbs.db
 .env.test
 .env.production
 
-ngrok.exe
-ngrok.zip
