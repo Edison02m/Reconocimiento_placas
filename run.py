@@ -31,14 +31,39 @@ def iniciar_sistema():
     """
     print("\n=== VERIFICACIÓN DE COMPONENTES ===")
     
-    # Verificar conexión a la cámara
+    # Verificar conexión a la cámara con reintentos automáticos
     print("\n1. Verificando conexión con la cámara...")
-    conectado, mensaje = verificar_conexion_camara()
-    if conectado:
-        print(" Conexión con la cámara establecida correctamente")
-    else:
-        print(f" Advertencia: {mensaje}")
-        print("   El sistema se iniciará pero es posible que no detecte placas.")
+    conectado = False
+    primer_intento = True
+    contador_puntos = 0
+    
+    while not conectado:
+        conectado, mensaje = verificar_conexion_camara()
+        
+        if conectado:
+            if not primer_intento:
+                print("\r", end="")  # Limpiar línea de progreso
+            print(" ✓ Conexión con la cámara establecida correctamente")
+        else:
+            if primer_intento:
+                print(f" ✗ Error: {mensaje}")
+                print("   Reintentando conexión (Ctrl+C para cancelar)")
+                print("   Conectando", end="", flush=True)
+                primer_intento = False
+            else:
+                # Mostrar indicador de progreso con puntos animados
+                puntos = "." * ((contador_puntos % 3) + 1)
+                espacios = " " * (3 - len(puntos))
+                print(f"\r   Intentando conectarse {puntos}{espacios}", end="", flush=True)
+                contador_puntos += 1
+            
+            try:
+                time.sleep(0.5)
+            except KeyboardInterrupt:
+                print("\n\n   Conexión cancelada por el usuario.")
+                print("   El sistema se iniciará sin conexión a la cámara.")
+                print("   Es posible que no detecte placas.")
+                break
     
     print("\n=== INICIANDO SERVICIOS ===")
     
