@@ -48,7 +48,7 @@ def iniciar_sistema():
             if primer_intento:
                 print(f" ✗ Error: {mensaje}")
                 print("   Reintentando conexión (Ctrl+C para cancelar)")
-                print("   Conectando", end="", flush=True)
+                print("   Intentando conectarse", end="", flush=True)
                 primer_intento = False
             else:
                 # Mostrar indicador de progreso con puntos animados
