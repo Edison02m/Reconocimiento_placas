@@ -5,10 +5,14 @@ Carga variables desde .env para seguridad de credenciales.
 """
 
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-# Cargar variables de entorno desde el archivo .env
-load_dotenv()
+# Obtener la ruta del directorio raíz del proyecto (un nivel arriba de app/)
+ROOT_DIR = Path(__file__).parent.parent.absolute()
+
+# Cargar variables de entorno desde el archivo .env en la raíz del proyecto
+load_dotenv(dotenv_path=ROOT_DIR / '.env')
 
 # Configuración de la cámara/API de placas
 URL = os.getenv('CAMERA_URL')

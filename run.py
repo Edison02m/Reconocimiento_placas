@@ -42,7 +42,7 @@ def iniciar_sistema():
         
         if conectado:
             if not primer_intento:
-                print("\r", end="")  # Limpiar línea de progreso
+                print("\r", end="") 
             print(" ✓ Conexión con la cámara establecida correctamente")
         else:
             if primer_intento:
@@ -51,7 +51,7 @@ def iniciar_sistema():
                 print("   Intentando conectarse", end="", flush=True)
                 primer_intento = False
             else:
-                # Mostrar indicador de progreso con puntos animados
+                # Indicador de progreso
                 puntos = "." * ((contador_puntos % 3) + 1)
                 espacios = " " * (3 - len(puntos))
                 print(f"\r   Intentando conectarse {puntos}{espacios}", end="", flush=True)
