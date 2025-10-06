@@ -13,8 +13,12 @@ import time
 import threading
 from app.camera import get_plates
 from app.api_citas import consultar_cita
-from app.state import actualizar_datos, crear_id_evento_exacto, eventos_exactos_procesados, ultima_consulta
+from app.state import actualizar_datos, ultima_consulta
 from app.config import INTERVALO_CONSULTA
+from app.supabase_client import enviar_deteccion_a_supabase
+
+# Variable para recordar el último evento procesado (placa + fecha exacta)
+ultimo_evento_procesado = None
 
 def procesar_ultimo_evento():
     """
@@ -23,7 +27,7 @@ def procesar_ultimo_evento():
     Esta función realiza el flujo principal de procesamiento cuando se detecta
     una nueva placa:
     1. Obtiene la lista de placas detectadas recientemente
-    2. Verifica si la placa más reciente ya ha sido procesada (evita duplicados)
+    2. Verifica si la combinación placa+fecha ya fue procesada
     3. Consulta si el vehículo tiene una cita programada
     4. Actualiza el estado del sistema para mostrar la información en la consola
     5. Marca el evento como procesado para evitar procesarlo nuevamente
@@ -34,18 +38,27 @@ def procesar_ultimo_evento():
     Returns:
         None
     """
+    global ultimo_evento_procesado
+    
     try:
         placas = get_plates()
         if not placas:
             return
 
         ultimo_evento = placas[0]
-        id_evento_exacto = crear_id_evento_exacto(ultimo_evento["placa"], ultimo_evento["fecha"])
         
-        if id_evento_exacto not in eventos_exactos_procesados:
+        # Crear identificador único con placa + fecha exacta
+        evento_actual = f"{ultimo_evento['placa']}_{ultimo_evento['fecha'].strftime('%Y%m%d%H%M%S')}"
+        
+        # Solo procesar si es diferente al último evento
+        if evento_actual != ultimo_evento_procesado:
             try:
                 resultado_cita = consultar_cita(ultimo_evento["placa"])
                 actualizar_datos(resultado_cita, ultimo_evento["placa"], ultimo_evento["fecha"])
+                
+                # Enviar detección a Supabase (solo si no es repetida)
+                enviar_deteccion_a_supabase(ultimo_evento["placa"])
+                
             except Exception as e:
                 print(f"Error al consultar cita: {e}")
                 datos_error = {
@@ -53,7 +66,12 @@ def procesar_ultimo_evento():
                     "mensaje": f"Error al consultar información: {str(e)[:100]}"
                 }
                 actualizar_datos(datos_error, ultimo_evento["placa"], ultimo_evento["fecha"])
-            eventos_exactos_procesados.add(id_evento_exacto)
+                
+                # Aún así enviar a Supabase aunque haya error en la API de citas
+                enviar_deteccion_a_supabase(ultimo_evento["placa"])
+            
+            # Marcar este evento como procesado
+            ultimo_evento_procesado = evento_actual
     except Exception as e:
         print(f"Error general en el procesamiento de evento: {e}")
 

@@ -16,6 +16,7 @@ import os
 import time
 from app.monitor import iniciar_monitor, obtener_ultima_deteccion
 from app.camera import verificar_conexion_camara
+from app.supabase_client import verificar_conexion_supabase_inicial
 
 def iniciar_sistema():
     """
@@ -65,6 +66,16 @@ def iniciar_sistema():
                 print("   Es posible que no detecte placas.")
                 break
     
+    # Verificar conexión con Supabase (solo una vez al inicio)
+    print("\n2. Verificando conexión con Supabase...")
+    conectado_supabase, mensaje_supabase = verificar_conexion_supabase_inicial()
+    
+    if conectado_supabase:
+        print(" ✓ Conexión con Supabase establecida correctamente")
+    else:
+        print(f" ✗ Advertencia: {mensaje_supabase}")
+        print("   El sistema funcionará sin guardar detecciones en Supabase")
+    
     print("\n=== INICIANDO SERVICIOS ===")
     
     # Iniciar hilo de monitoreo
@@ -81,7 +92,7 @@ def iniciar_sistema():
         while True:
             try:
                 deteccion = obtener_ultima_deteccion()
-                # Crear identificador único con placa + fecha para evitar duplicados exactos
+                # Filtrar por placa + fecha exacta para evitar spam en consola
                 if deteccion:
                     deteccion_actual = f"{deteccion['placa']}_{deteccion['fecha']}"
                     if deteccion_actual != ultima_deteccion_completa:

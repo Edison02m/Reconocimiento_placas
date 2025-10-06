@@ -25,6 +25,10 @@ URL_CITAS = os.getenv('URL_CITAS')
 NO_CIA = os.getenv('NO_CIA')
 AGENCIA = os.getenv('AGENCIA')
 
+# Configuración de Supabase
+SUPABASE_URL = os.getenv('SUPABASE_URL')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+
 # XML con fecha de inicio para filtrar eventos, no necesario
 BODY_XML = """
 <AfterTime>
