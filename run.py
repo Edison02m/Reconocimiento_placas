@@ -1,16 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Sistema de Detección de Placas Vehiculares - Casabaca
-
-Este es el punto de entrada principal del sistema de detección de placas vehiculares.
-El script inicializa todos los componentes necesarios y verifica las conexiones.
-La salida se muestra en consola.
-
-Autor: Edison02m
-Fecha: 2025
-Versión: 1.0
-"""
+"""Sistema de Detección de Placas Vehiculares - Punto de entrada principal"""
 
 import os
 import time
@@ -19,20 +9,9 @@ from app.camera import verificar_conexion_camara
 from app.supabase_client import verificar_conexion_supabase_inicial
 
 def iniciar_sistema():
-    """
-    Inicializa el sistema de detección de placas.
-    
-    Esta función realiza las siguientes tareas:
-    1. Verifica la conexión con la cámara de detección de placas
-    2. Inicia el hilo de monitoreo para la detección de placas
-    3. Muestra los resultados en consola
-    
-    Returns:
-        None
-    """
+    """Inicializa sistema: verifica conexiones, inicia monitoreo y muestra detecciones"""
     print("\n=== VERIFICACIÓN DE COMPONENTES ===")
     
-    # Verificar conexión a la cámara con reintentos automáticos
     print("\n1. Verificando conexión con la cámara...")
     conectado = False
     primer_intento = True
@@ -52,7 +31,6 @@ def iniciar_sistema():
                 print("   Intentando conectarse", end="", flush=True)
                 primer_intento = False
             else:
-                # Indicador de progreso
                 puntos = "." * ((contador_puntos % 3) + 1)
                 espacios = " " * (3 - len(puntos))
                 print(f"\r   Intentando conectarse {puntos}{espacios}", end="", flush=True)
@@ -66,7 +44,6 @@ def iniciar_sistema():
                 print("   Es posible que no detecte placas.")
                 break
     
-    # Verificar conexión con Supabase (solo una vez al inicio)
     print("\n2. Verificando conexión con Supabase...")
     conectado_supabase, mensaje_supabase = verificar_conexion_supabase_inicial()
     
@@ -78,7 +55,6 @@ def iniciar_sistema():
     
     print("\n=== INICIANDO SERVICIOS ===")
     
-    # Iniciar hilo de monitoreo
     print("\nIniciando sistema de monitoreo...")
     iniciar_monitor()
     print(" Monitor de placas iniciado")
@@ -87,12 +63,10 @@ def iniciar_sistema():
     print("(Presione Ctrl+C para detener) \n")
     
     try:
-        # Bucle principal para mostrar resultados en consola
         ultima_deteccion_completa = None
         while True:
             try:
                 deteccion = obtener_ultima_deteccion()
-                # Filtrar por placa + fecha exacta para evitar spam en consola
                 if deteccion:
                     deteccion_actual = f"{deteccion['placa']}_{deteccion['fecha']}"
                     if deteccion_actual != ultima_deteccion_completa:
@@ -101,21 +75,6 @@ def iniciar_sistema():
                         print(f"PLACA DETECTADA: {deteccion['placa']}")
                         print(f"FECHA: {deteccion['fecha']}")
                         print(f"ESTADO: {deteccion['mensaje']}")
-                        
-                        if deteccion["tiene_cita"]:
-                            datos_cita = deteccion["datos_cita"]
-                            print("\nDATOS DE LA CITA:")
-                            print(f"  Cliente: {datos_cita.get('nombreCliente', 'N/A')}")
-                            print(f"  Vehículo: {datos_cita.get('descripcionVeh', 'N/A')}")
-                            print(f"  Fecha: {datos_cita.get('fechaCita', 'N/A')}")
-                            print(f"  Hora: {datos_cita.get('horaCita', 'N/A') if 'horaCita' in datos_cita else datos_cita.get('fechaCita', 'N/A').split(' ')[1] if ' ' in datos_cita.get('fechaCita', 'N/A') else 'N/A'}")
-                            print(f"  Asesor: {datos_cita.get('nombreAsesor', datos_cita.get('asesor', 'N/A'))}")
-                            print(f"  OT: {datos_cita.get('ordenrepld', 'N/A')}")
-                            if 'descripcionAlterna' in datos_cita and datos_cita['descripcionAlterna']:
-                                print(f"  Servicio: {datos_cita['descripcionAlterna']}")
-                            if 'agencia' in datos_cita and datos_cita['agencia']:
-                                print(f"  Agencia: {datos_cita['agencia']}")
-                        
                         print("="*50)
             except Exception as e:
                 print(f"\nError al procesar detección: {e}")

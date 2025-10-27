@@ -1,7 +1,5 @@
 """
-Módulo de comunicación con la cámara Hikvision para detección de placas vehiculares
-
-API REST que devuelve datos en formato XML. Requiere autenticación HTTP Digest.
+Comunicación con cámara Hikvision ANPR via API REST (XML + HTTP Digest Auth)
 """
 
 import requests
@@ -12,12 +10,7 @@ import time
 from app.config import URL, USERNAME, PASSWORD, HEADERS, BODY_XML
 
 def verificar_conexion_camara():
-    """
-    Verifica conexión con la cámara Hikvision.
-    
-    Returns:
-        tuple: (bool, str) - (True/False si hay conexión, mensaje descriptivo)
-    """
+    """Verifica conexión con la cámara. Retorna (bool, str)"""
     try:
         response = requests.get(
             URL,
@@ -38,16 +31,7 @@ def verificar_conexion_camara():
         return False, f"Error desconocido al conectar con la cámara: {e}"
 
 def get_plates():
-    """
-    Obtiene las placas detectadas por la cámara Hikvision.
-    
-    Maneja namespace XML variable según versión del firmware.
-    Resultados ordenados por fecha (más reciente primero).
-    
-    Returns:
-        list: Diccionarios con 'placa', 'fecha' y 'país'.
-              Lista vacía si hay error.
-    """
+    """Obtiene placas detectadas. Retorna lista de dict {'placa', 'fecha', 'país'} ordenada por fecha"""
     conectado, _ = verificar_conexion_camara()
     if not conectado:
         return []
@@ -102,10 +86,7 @@ def get_plates():
         return []
 
 def probar_conexion():
-    """
-    Función de diagnóstico para probar la conexión con la cámara.
-    Para uso cuando se ejecuta este archivo como script principal.
-    """
+    """Diagnóstico de conexión con la cámara"""
     print(f"Probando conexión a la cámara en: {URL}")
     print(f"Usuario: {USERNAME}")
     

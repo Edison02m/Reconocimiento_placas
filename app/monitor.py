@@ -1,43 +1,16 @@
-"""
-Módulo de monitoreo continuo para la detección de placas vehiculares
-
-Este módulo implementa un sistema de monitoreo en segundo plano que verifica
-continuamente si hay nuevas placas detectadas por la cámara. Cuando detecta
-una nueva placa, realiza las siguientes acciones:
-
-1. Consulta si el vehículo tiene citas programadas
-2. Actualiza el estado del sistema para mostrar la información en la consola
-"""
+"""Monitoreo continuo de placas detectadas por la cámara"""
 
 import time
 import threading
 from app.camera import get_plates
-from app.api_citas import consultar_cita
 from app.state import actualizar_datos, ultima_consulta
 from app.config import INTERVALO_CONSULTA
 from app.supabase_client import enviar_deteccion_a_supabase
 
-# Variable para recordar el último evento procesado (placa + fecha exacta)
 ultimo_evento_procesado = None
 
 def procesar_ultimo_evento():
-    """
-    Procesa el evento más reciente de detección de placa.
-    
-    Esta función realiza el flujo principal de procesamiento cuando se detecta
-    una nueva placa:
-    1. Obtiene la lista de placas detectadas recientemente
-    2. Verifica si la combinación placa+fecha ya fue procesada
-    3. Consulta si el vehículo tiene una cita programada
-    4. Actualiza el estado del sistema para mostrar la información en la consola
-    5. Marca el evento como procesado para evitar procesarlo nuevamente
-    
-    Si no hay placas detectadas o la última ya fue procesada, la función
-    termina sin realizar ninguna acción.
-    
-    Returns:
-        None
-    """
+    """Procesa evento más reciente: obtiene placas, envía a Supabase si es nueva, actualiza estado"""
     global ultimo_evento_procesado
     
     try:
@@ -47,48 +20,23 @@ def procesar_ultimo_evento():
 
         ultimo_evento = placas[0]
         
-        # Crear identificador único con placa + fecha exacta
         evento_actual = f"{ultimo_evento['placa']}_{ultimo_evento['fecha'].strftime('%Y%m%d%H%M%S')}"
         
-        # Solo procesar si es diferente al último evento
         if evento_actual != ultimo_evento_procesado:
             try:
-                resultado_cita = consultar_cita(ultimo_evento["placa"])
-                actualizar_datos(resultado_cita, ultimo_evento["placa"], ultimo_evento["fecha"])
-                
-                # Enviar detección a Supabase (solo si no es repetida)
+                actualizar_datos(ultimo_evento["placa"], ultimo_evento["fecha"])
                 enviar_deteccion_a_supabase(ultimo_evento["placa"])
                 
             except Exception as e:
-                print(f"Error al consultar cita: {e}")
-                datos_error = {
-                    "codigo": "1",
-                    "mensaje": f"Error al consultar información: {str(e)[:100]}"
-                }
-                actualizar_datos(datos_error, ultimo_evento["placa"], ultimo_evento["fecha"])
-                
-                # Aún así enviar a Supabase aunque haya error en la API de citas
-                enviar_deteccion_a_supabase(ultimo_evento["placa"])
+                print(f"Error al procesar placa: {e}")
+                actualizar_datos(ultimo_evento["placa"], ultimo_evento["fecha"], error=str(e))
             
-            # Marcar este evento como procesado
             ultimo_evento_procesado = evento_actual
     except Exception as e:
         print(f"Error general en el procesamiento de evento: {e}")
 
 def monitor_thread():
-    """
-    Función que se ejecuta en un hilo separado para monitorear continuamente la cámara.
-    
-    Este procedimiento implementa el bucle infinito de monitoreo que verifica
-    periódicamente si hay nuevas placas detectadas. El intervalo entre consultas
-    se configura mediante la constante INTERVALO_CONSULTA en el archivo config.py.
-    
-    El bucle continuará indefinidamente hasta que el programa principal termine,
-    ya que se ejecuta como un hilo daemon.
-    
-    Returns:
-        None
-    """
+    """Bucle infinito de monitoreo ejecutado en hilo daemon"""
     while True:
         try:
             procesar_ultimo_evento()
@@ -97,30 +45,13 @@ def monitor_thread():
         time.sleep(INTERVALO_CONSULTA)
 
 def iniciar_monitor():
-    """
-    Inicia el hilo de monitoreo en segundo plano.
-    
-    Crea y arranca un nuevo hilo (Thread) que ejecuta la función monitor_thread
-    en segundo plano. El hilo se configura como daemon para que termine 
-    automáticamente cuando el programa principal finalice.
-    
-    Returns:
-        threading.Thread: Objeto Thread que representa el hilo de monitoreo iniciado
-    """
+    """Inicia hilo daemon de monitoreo en segundo plano"""
     t = threading.Thread(target=monitor_thread, daemon=True)
     t.start()
     return t
 
 def obtener_ultima_deteccion():
-    """
-    Obtiene la información de la última placa detectada.
-    
-    Esta función devuelve la información actualizada sobre la última placa
-    detectada por el sistema, incluyendo datos sobre la cita si existe.
-    
-    Returns:
-        dict: Diccionario con los datos de la última detección o None si no hay datos
-    """
+    """Retorna dict con datos de última detección o None"""
     if ultima_consulta["placa"] is None:
         return None
     return ultima_consulta 
